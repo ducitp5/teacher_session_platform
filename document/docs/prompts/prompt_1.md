@@ -1,42 +1,78 @@
-You are a senior software architect and full-stack engineer.
-read the business_analyse_1.md; after generate the system design in system_design_1.md file
+# AI Project Generator Prompt
 
-Generate a full project for a platform where teachers create teaching sessions and students enroll.
+## Role
 
-Tech stack:
+You are a **senior software architect and full-stack engineer**.
 
-Backend
-- Spring Boot 3 + thymeleaf // the first step, developer only with thymeleaf
+Read the file **`business_analyse_1.md`**, then generate the **system design** and save it into: system_design_1.md
+
+---
+
+# Project Description
+
+Generate a **full project** for a **teaching platform** where:
+
+- Teachers can create teaching sessions
+- Students can browse sessions
+- Students can enroll in sessions
+
+---
+
+# Tech Stack
+
+## Backend
+
+- Spring Boot 3
+- Thymeleaf  
+  *(first phase uses Thymeleaf only for developers)*
 - JPA / Hibernate
 - MySQL
 - REST API
 
-Frontend
+## Frontend
+
 - React
 - TailwindCSS
 
-Architecture
-- Clean architecture
+---
+
+# Architecture
+
+Use **Clean Architecture** with the following layers:
+
 - Controller
 - Service
 - Repository
 - DTO
 - Mapper
 
-Core domain:
+---
 
-Users
-Sessions
-Enrollments
-Teacher profiles
+# Core Domain
 
-Rules:
+The platform must include these main domains:
 
-Teachers create sessions.
-Students browse sessions and enroll.
-Sessions can be ONLINE or OFFLINE.
+- Users
+- Sessions
+- Enrollments
+- Teacher Profiles
 
-Generate:
+---
+
+# Business Rules
+
+- Teachers can **create sessions**
+- Students can **browse sessions**
+- Students can **enroll in sessions**
+- Sessions can be:
+    - `ONLINE`
+    - `OFFLINE`
+
+---
+
+# What to Generate
+
+Generate the following components:
 
 1. Database schema
 2. JPA entities
@@ -47,13 +83,28 @@ Generate:
 7. Validation rules
 8. React pages
 9. React API services
-10. Tailwind UI components.
+10. Tailwind UI components
 
-Use best practices for Spring Boot and React.
+---
 
-Project structure:
+# Coding Standards
 
+Use **best practices** for:
+
+- Spring Boot
+- React
+- Clean architecture
+- Maintainable code structure
+
+---
+
+# Project Structure
 /backend
 /frontend
 
-Generate step by step.
+
+---
+
+# Generation Strategy
+
+Generate the project **step by step**.

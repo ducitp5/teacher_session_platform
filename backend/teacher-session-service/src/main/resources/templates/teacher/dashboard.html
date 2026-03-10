@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(~{::title}, ~{::content})}">
+
+<head>
+    <title>LearnHub - Teacher Dashboard</title>
+</head>
+
+<body>
+    <th:block th:fragment="content">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h1 class="text-3xl font-black text-slate-900 tracking-tight">Teacher Dashboard</h1>
+                    <p class="mt-1 text-sm text-slate-500">Manage your teaching sessions and students.</p>
+                </div>
+                <a href="/teacher/sessions/create"
+                    class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-bold rounded-xl text-white bg-slate-900 hover:bg-black shadow-lg shadow-slate-300 transition-all hover:-translate-y-0.5">
+                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                        fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Create Session
+                </a>
+            </div>
+
+            <div th:if="${param.success}" class="mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+                <p class="text-sm text-green-700">Action completed successfully.</p>
+            </div>
+            <div th:if="${param.error}" class="mb-8 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                <p class="text-sm text-red-700" th:text="${param.error}"></p>
+            </div>
+
+            <!-- Stats Overview (Mockup for aesthetics) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-xl bg-indigo-50 text-primary">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-slate-500">Total Sessions</p>
+                            <h3 class="text-2xl font-black text-slate-900" th:text="${#lists.size(sessions)}">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-xl bg-pink-50 text-secondary">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-slate-500">Total Enrolled</p>
+                            <h3 class="text-2xl font-black text-slate-900"
+                                th:text="${#aggregates.sum(sessions.![enrolledStudents]) ?: 0}">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-xl bg-white/10 text-white">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-slate-300">Estimated Revenue</p>
+                            <h3 class="text-2xl font-black text-white">Metrics</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white shadow-sm border border-slate-100 rounded-3xl overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-100 bg-slate-50">
+                    <h3 class="text-xl font-bold text-slate-900">Your Sessions</h3>
+                </div>
+
+                <div th:if="${sessions.empty}" class="p-12 text-center text-slate-500">
+                    <p>You haven't created any sessions yet.</p>
+                </div>
+
+                <ul role="list" class="divide-y divide-slate-100" th:unless="${sessions.empty}">
+                    <li th:each="session : ${sessions}" class="hover:bg-slate-50 transition-colors">
+                        <div class="px-6 py-6 flex items-center justify-between">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-sm font-bold text-primary"
+                                        th:text="${session.subject}">Subject</span>
+                                    <span th:if="${session.status.name() == 'OPEN'}"
+                                        class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-green-100 text-green-800 tracking-wider">Open</span>
+                                    <span th:if="${session.status.name() == 'FULL'}"
+                                        class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-red-100 text-red-800 tracking-wider">Full</span>
+                                    <span th:if="${session.status.name() == 'CANCELLED'}"
+                                        class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-800 tracking-wider">Cancelled</span>
+                                </div>
+                                <a th:href="@{'/sessions/' + ${session.id}}" class="block">
+                                    <p class="text-lg font-bold text-slate-900 truncate mb-1"
+                                        th:text="${session.title}">Session Title</p>
+                                </a>
+                                <div class="flex items-center text-sm text-slate-500 gap-4">
+                                    <div class="flex items-center">
+                                        <svg class="flex-shrink-0 mr-1.5 h-4 w-4 text-slate-400"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span
+                                            th:text="${#temporals.format(session.startDate, 'MMM d, yyyy h:mm a')}">Date</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <svg class="flex-shrink-0 mr-1.5 h-4 w-4 text-slate-400"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                        <span
+                                            th:text="${session.enrolledStudents + '/' + session.maxStudents + ' Enrolled'}">0/10</span>
+                                    </div>
+                                    <div class="flex items-center font-semibold text-slate-900">
+                                        <span th:text="${'$' + session.price}">$49</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 pr-2">
+                                <form th:if="${session.status.name() != 'CANCELLED'}"
+                                    th:action="@{'/teacher/sessions/' + ${session.id} + '/cancel'}" method="POST"
+                                    onsubmit="return confirm('Are you sure you want to cancel this session?');">
+                                    <button type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900 border border-red-100 hover:bg-red-50 rounded-lg px-3 py-1.5 transition-colors">
+                                        Cancel
+                                    </button>
+                                </form>
+                                <a th:href="@{'/sessions/' + ${session.id}}"
+                                    class="p-2 text-slate-400 hover:text-primary transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </th:block>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(~{::title}, ~{::content})}">
+
+<head>
+    <title>LearnHub - Student Dashboard</title>
+</head>
+
+<body>
+<th:block th:fragment="content">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <div class="mb-8">
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">My Learning</h1>
+            <p class="mt-1 text-sm text-slate-500">Manage your enrolled sessions.</p>
+        </div>
+
+        <div th:if="${param.success}" class="mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+            <p class="text-sm text-green-700">Action completed successfully.</p>
+        </div>
+        <div th:if="${param.error}" class="mb-8 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+            <p class="text-sm text-red-700" th:text="${param.error}"></p>
+        </div>
+
+        <div class="bg-white shadow-sm border border-slate-100 rounded-3xl overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-100 bg-slate-50">
+                <h3 class="text-xl font-bold text-slate-900">Enrolled Sessions</h3>
+            </div>
+
+            <div th:if="${enrollments.empty}" class="p-12 text-center text-slate-500">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
+                    <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                        </path>
+                    </svg>
+                </div>
+                <p class="text-lg font-medium text-slate-900 mb-2">You are not enrolled in any sessions yet.</p>
+                <a href="/" class="text-primary hover:text-indigo-800 font-bold transition-colors">Browse classes to
+                    get started -></a>
+            </div>
+
+            <ul role="list" class="divide-y divide-slate-100" th:unless="${enrollments.empty}">
+                <li th:each="enrollment : ${enrollments}" class="hover:bg-slate-50 transition-colors">
+                    <div class="px-6 py-6 flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                    <span th:if="${enrollment.status.name() == 'ACTIVE'}"
+                                          class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-green-100 text-green-800 tracking-wider">Active</span>
+                                <span th:if="${enrollment.status.name() == 'CANCELLED'}"
+                                      class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-800 tracking-wider">Cancelled</span>
+                            </div>
+                            <a th:href="@{'/sessions/' + ${enrollment.sessionId}}" class="block">
+                                <p class="text-lg font-bold text-slate-900 truncate mb-1"
+                                   th:text="${enrollment.sessionTitle}">Session Title</p>
+                            </a>
+                            <p class="text-sm text-slate-500">
+                                Enrolled on: <span
+                                    th:text="${#temporals.format(enrollment.enrolledAt, 'MMM d, yyyy')}">Date</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-center gap-3 pr-2">
+                            <a th:href="@{'/sessions/' + ${enrollment.sessionId}}"
+                               class="text-sm font-bold text-primary hover:text-indigo-800 transition-colors">
+                                View Details
+                            </a>
+                            <span class="hidden sm:block text-slate-300">|</span>
+                            <form th:if="${enrollment.status.name() == 'ACTIVE'}"
+                                  th:action="@{'/student/enrollments/' + ${enrollment.id} + '/cancel'}" method="POST"
+                                  onsubmit="return confirm('Are you sure you want to drop this class?');">
+                                <button type="submit"
+                                        class="text-sm font-medium text-red-600 hover:text-red-900 transition-colors">
+                                    Drop Class
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</th:block>
+</body>
+
+</html>

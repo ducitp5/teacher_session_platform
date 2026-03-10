@@ -1,0 +1,21 @@
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# Node
+node_modules/
+dist/
+build/
+.env.local
+
+# Java/Maven
+target/
+*.jar
+*.war
+.mvn/
+
+# OS
+.DS_Store
+Thumbs.db
