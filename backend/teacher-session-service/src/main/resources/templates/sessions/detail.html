@@ -43,11 +43,11 @@
                             <span
                                     class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-100 text-primary"
                                     th:text="${session.subject}">Category</span>
-                        <span th:if="${session.sessionType.name() == 'ONLINE'}"
+                        <span th:if="${session.sessionType?.name() == 'ONLINE'}"
                               class="flex items-center text-sm font-semibold text-green-600">
                                 <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span> Online
                             </span>
-                        <span th:if="${session.sessionType.name() == 'OFFLINE'}"
+                        <span th:if="${session.sessionType?.name() == 'OFFLINE'}"
                               class="flex items-center text-sm font-semibold text-blue-600">
                                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                      xmlns="http://www.w3.org/2000/svg">
@@ -102,12 +102,12 @@
                             </p>
                         </div>
                         <div class="text-right">
-                                <span th:if="${session.status.name() == 'OPEN'}"
+                                <span th:if="${session.status?.name() == 'OPEN'}"
                                       class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-green-100 text-green-800">Available</span>
-                            <span th:if="${session.status.name() == 'FULL'}"
+                            <span th:if="${session.status?.name() == 'FULL'}"
                                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-red-100 text-red-800">Sold
                                     Out</span>
-                            <span th:if="${session.status.name() == 'CANCELLED'}"
+                            <span th:if="${session.status?.name() == 'CANCELLED'}"
                                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-slate-100 text-slate-800">Cancelled</span>
                         </div>
                     </div>
@@ -150,9 +150,9 @@
                             </svg>
                             <div>
                                 <p class="text-sm font-medium text-slate-900"
-                                   th:text="${session.sessionType.name() == 'ONLINE' ? 'Online Meeting' : session.location}">
+                                   th:text="${session.sessionType?.name() == 'ONLINE' ? 'Online Meeting' : session.location}">
                                     Location</p>
-                                <p th:if="${session.sessionType.name() == 'ONLINE'}"
+                                <p th:if="${session.sessionType?.name() == 'ONLINE'}"
                                    class="text-xs text-slate-500 mt-1">Link provided after enrollment</p>
                             </div>
                         </div>
@@ -185,7 +185,7 @@
                             In</a>
                     </div>
 
-                    <div th:if="${userId != null and userRole == 'STUDENT' and session.status.name() == 'OPEN'}">
+                    <div th:if="${userId != null and userRole == 'STUDENT' and session.status?.name() == 'OPEN'}">
                         <form th:action="@{'/sessions/' + ${session.id} + '/enroll'}" method="POST">
                             <button type="submit"
                                     class="w-full flex justify-center py-4 px-4 border border-transparent text-lg font-black rounded-xl text-white bg-gradient-to-r from-primary to-primary/90 hover:to-primary shadow-lg shadow-indigo-200 transition-all hover:-translate-y-1">
