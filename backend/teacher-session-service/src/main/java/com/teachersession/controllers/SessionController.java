@@ -38,7 +38,7 @@ public class SessionController {
     @GetMapping("/sessions/{id}")
     public String sessionDetails(@PathVariable Long id, Model model, HttpSession session) {
         SessionDto sessionDto = sessionService.getSessionById(id);
-        model.addAttribute("session", sessionDto);
+        model.addAttribute("courseSession", sessionDto);
         
         Long userId = (Long) session.getAttribute("userId");
         if (userId != null) {
