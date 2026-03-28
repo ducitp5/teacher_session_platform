@@ -1,0 +1,23 @@
+<div class="flex items-center justify-between mb-8">
+    <div>
+        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Teacher Dashboard</h1>
+        <p class="mt-1 text-sm text-slate-500">Manage your teaching sessions and students.</p>
+    </div>
+    <a href="/teacher/sessions/create"
+       class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-bold rounded-xl text-white bg-slate-900 hover:bg-black shadow-lg shadow-slate-300 transition-all hover:-translate-y-0.5">
+        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+             fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd"
+                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                  clip-rule="evenodd" />
+        </svg>
+        Create Session
+    </a>
+</div>
+
+<div th:if="${param.success}" class="mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+    <p class="text-sm text-green-700">Action completed successfully.</p>
+</div>
+<div th:if="${param.error}" class="mb-8 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+    <p class="text-sm text-red-700" th:text="${param.error}"></p>
+</div>

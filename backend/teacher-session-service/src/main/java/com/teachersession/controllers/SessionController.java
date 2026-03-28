@@ -56,7 +56,7 @@ public class SessionController {
         if (teacherId == null) return "redirect:/login";
         
         List<SessionDto> sessions = sessionService.getSessionsByTeacher(teacherId);
-        model.addAttribute("sessions", sessions);
+        model.addAttribute("courSessions", sessions);
         model.addAttribute("userFirstName", session.getAttribute("userFirstName"));
         return "teacher/dashboard";
     }
