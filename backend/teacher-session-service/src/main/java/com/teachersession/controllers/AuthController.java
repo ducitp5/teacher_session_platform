@@ -2,6 +2,7 @@ package com.teachersession.controllers;
 
 import com.teachersession.dto.UserDto;
 import com.teachersession.entities.enums.Role;
+import com.teachersession.exceptions.AuthException;
 import com.teachersession.services.AuthService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -29,20 +30,19 @@ public class AuthController {
                         @RequestParam String password,
                         HttpSession session,
                         Model model) {
-        Optional<UserDto> userOpt = authService.login(email, password);
-        if (userOpt.isPresent()) {
-            UserDto user = userOpt.get();
+        try {
+            UserDto user = authService.login(email, password);
+
             session.setAttribute("userId", user.getId());
             session.setAttribute("userRole", user.getRole().name());
             session.setAttribute("userFirstName", user.getFirstName());
-            
-            if (user.getRole() == Role.TEACHER) {
-                return "redirect:/teacher/dashboard";
-            } else {
-                return "redirect:/";
-            }
-        } else {
-            model.addAttribute("error", "Invalid email or password");
+
+            return (user.getRole() == Role.TEACHER)
+                    ? "redirect:/teacher/dashboard"
+                    : "redirect:/";
+
+        } catch (AuthException ex) {
+            model.addAttribute("error", ex.getErrorCode().getMessage());
             return "auth/login";
         }
     }

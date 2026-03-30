@@ -3,6 +3,8 @@ package com.teachersession.services;
 import com.teachersession.dto.UserDto;
 import com.teachersession.entities.User;
 import com.teachersession.entities.enums.Role;
+import com.teachersession.exceptions.AuthException;
+import com.teachersession.exceptions.enums.AuthErrorCode;
 import com.teachersession.mappers.UserMapper;
 import com.teachersession.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +36,15 @@ public class AuthService {
         return userMapper.toDto(saved);
     }
 
-    public Optional<UserDto> login(String email, String password) {
-        return userRepository.findByEmail(email)
-                .filter(user -> user.getPassword().equals(password)) // In real app use passwordEncoder
-                .map(userMapper::toDto);
+    public UserDto login(String email, String password) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.EMAIL_NOT_FOUND));
+
+        if (!user.getPassword().equals(password)) {
+            throw new AuthException(AuthErrorCode.WRONG_PASSWORD);
+        }
+
+        return userMapper.toDto(user);
     }
 }

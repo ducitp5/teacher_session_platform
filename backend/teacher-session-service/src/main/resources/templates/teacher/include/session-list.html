@@ -14,12 +14,20 @@
                     <div class="flex items-center gap-2 mb-1">
                                     <span class="text-sm font-bold text-primary"
                                           th:text="${courSession.subject}">Subject</span>
+                        
+                        <!-- Status Badges -->
                         <span th:if="${courSession.status.name() == 'OPEN'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-green-100 text-green-800 tracking-wider">Open</span>
                         <span th:if="${courSession.status.name() == 'FULL'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-red-100 text-red-800 tracking-wider">Full</span>
                         <span th:if="${courSession.status.name() == 'CANCELLED'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-800 tracking-wider">Cancelled</span>
+                              
+                        <!-- Type Badges -->
+                        <span th:if="${courSession.sessionType?.name() == 'ONLINE'}"
+                              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-indigo-100 text-indigo-800 tracking-wider border border-indigo-200">Online</span>
+                        <span th:if="${courSession.sessionType?.name() == 'OFFLINE'}"
+                              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-orange-100 text-orange-800 tracking-wider border border-orange-200">In-Person</span>
                     </div>
                     <a th:href="@{'/sessions/' + ${courSession.id}}" class="block">
                         <p class="text-lg font-bold text-slate-900 truncate mb-1"
