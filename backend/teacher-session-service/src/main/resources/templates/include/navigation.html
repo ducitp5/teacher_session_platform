@@ -17,7 +17,7 @@
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
                 <!-- Unauthenticated -->
-                <th:block th:if="${session.userId == null}">
+                <th:block th:if="${session.userDto == null}">
                     <a href="/login"
                        class="text-slate-500 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">Login</a>
                     <a href="/register"
@@ -27,20 +27,20 @@
                 </th:block>
 
                 <!-- Authenticated -->
-                <th:block th:if="${session.userId != null}">
+                <th:block th:if="${session.userDto != null}">
                     <div class="flex items-center space-x-4">
                         <span class="text-sm font-medium text-slate-500">Welcome,
                             <span class="text-slate-900 font-bold"
-                                th:text="${session.userFirstName}">
+                                  th:text="${session.userDto.firstName}">
                                 User
                             </span>
                         </span>
 
-                        <a th:if="${session.userRole == 'TEACHER'}" href="/teacher/dashboard"
+                        <a th:if="${session.userDto.role.name() == 'TEACHER'}" href="/teacher/dashboard"
                            class="text-sm font-medium text-primary hover:text-indigo-800 transition-colors">
                             Teacher Dashboard
                         </a>
-                        <a th:if="${session.userRole == 'STUDENT'}" href="/student/dashboard"
+                        <a th:if="${session.userDto.role.name() == 'STUDENT'}" href="/student/dashboard"
                            class="text-sm font-medium text-primary hover:text-indigo-800 transition-colors">
                             My Enrollments
                         </a>

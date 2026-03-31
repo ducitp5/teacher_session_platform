@@ -6,7 +6,8 @@ import com.teachersession.entities.User;
 import com.teachersession.entities.enums.Role;
 import com.teachersession.entities.enums.SessionStatus;
 import com.teachersession.entities.enums.SessionType;
-import com.teachersession.exceptions.ResourceNotFoundException;
+import com.teachersession.exceptions.SessionException;
+import com.teachersession.exceptions.enums.SessionErrorCode;
 import com.teachersession.mappers.SessionMapper;
 import com.teachersession.repositories.SessionRepository;
 import com.teachersession.repositories.UserRepository;
@@ -29,18 +30,18 @@ public class SessionService {
     @Transactional
     public SessionDto createSession(SessionDto dto) {
         User teacher = userRepository.findById(dto.getTeacherId())
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found"));
+                .orElseThrow(() -> new SessionException(SessionErrorCode.TEACHER_NOT_FOUND));
                 
         if (teacher.getRole() != Role.TEACHER) {
-            throw new IllegalArgumentException("Only teachers can create sessions");
+            throw new SessionException(SessionErrorCode.ONLY_TEACHERS_CAN_CREATE_SESSIONS);
         }
         
         if (dto.getSessionType() == SessionType.ONLINE && (dto.getMeetingLink() == null || dto.getMeetingLink().isEmpty())) {
-            throw new IllegalArgumentException("Online sessions require a meeting link");
+            throw new SessionException(SessionErrorCode.ONLINE_SESSION_REQUIRES_MEETING_LINK);
         }
         
         if (dto.getSessionType() == SessionType.OFFLINE && (dto.getLocation() == null || dto.getLocation().isEmpty())) {
-            throw new IllegalArgumentException("Offline sessions require a location");
+            throw new SessionException(SessionErrorCode.OFFLINE_SESSION_REQUIRES_LOCATION);
         }
 
         Session session = Session.builder()
@@ -67,10 +68,17 @@ public class SessionService {
                 .collect(Collectors.toList());
     }
 
+    public List<SessionDto> searchSessions(String search, SessionType type) {
+        String finalSearch = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+        return sessionRepository.searchSessions(finalSearch, type).stream()
+                .map(sessionMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public SessionDto getSessionById(Long id) {
         return sessionRepository.findById(id)
                 .map(sessionMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Session not found"));
+                .orElseThrow(() -> new SessionException(SessionErrorCode.SESSION_NOT_FOUND));
     }
     
     public List<SessionDto> getSessionsByTeacher(Long teacherId) {
@@ -82,14 +90,14 @@ public class SessionService {
     @Transactional
     public SessionDto cancelSession(Long sessionId, Long teacherId) {
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Session not found"));
+                .orElseThrow(() -> new SessionException(SessionErrorCode.SESSION_NOT_FOUND));
                 
         if (!session.getTeacher().getId().equals(teacherId)) {
-            throw new IllegalArgumentException("Not authorized to cancel this session");
+            throw new SessionException(SessionErrorCode.NOT_AUTHORIZED_TO_CANCEL);
         }
         
         if (session.getStartDate().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Cannot cancel a session that has already started");
+            throw new SessionException(SessionErrorCode.CANNOT_CANCEL_STARTED_SESSION);
         }
         
         session.setStatus(SessionStatus.CANCELLED);

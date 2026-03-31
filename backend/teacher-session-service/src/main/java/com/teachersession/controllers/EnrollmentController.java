@@ -1,6 +1,7 @@
 package com.teachersession.controllers;
 
 import com.teachersession.dto.EnrollmentDto;
+import com.teachersession.dto.UserDto;
 import com.teachersession.entities.enums.Role;
 import com.teachersession.services.EnrollmentService;
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +27,10 @@ public class EnrollmentController {
         
         List<EnrollmentDto> enrollments = enrollmentService.getStudentEnrollments(studentId);
         model.addAttribute("enrollments", enrollments);
-        model.addAttribute("userFirstName", session.getAttribute("userFirstName"));
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+        if (userDto != null) {
+            model.addAttribute("userDto", userDto);
+        }
         return "student/dashboard";
     }
 
@@ -57,12 +61,8 @@ public class EnrollmentController {
     }
 
     private Long checkStudentAuth(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        String roleStr = (String) session.getAttribute("userRole");
-        if (userId == null || roleStr == null) return null;
-        
-        Role role = Role.valueOf(roleStr);
-        if (role != Role.STUDENT) return null;
-        return userId;
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+        if (userDto == null || userDto.getRole() != Role.STUDENT) return null;
+        return userDto.getId();
     }
 }

@@ -21,7 +21,7 @@ public class AuthService {
 
     public UserDto register(String email, String password, String firstName, String lastName, Role role) {
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("Email already in use");
+            throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
         }
         
         User user = User.builder()

@@ -31,13 +31,11 @@ public class AuthController {
                         HttpSession session,
                         Model model) {
         try {
-            UserDto user = authService.login(email, password);
+            UserDto userDto = authService.login(email, password);
 
-            session.setAttribute("userId", user.getId());
-            session.setAttribute("userRole", user.getRole().name());
-            session.setAttribute("userFirstName", user.getFirstName());
+            session.setAttribute("userDto", userDto);
 
-            return (user.getRole() == Role.TEACHER)
+            return (userDto.getRole() == Role.TEACHER)
                     ? "redirect:/teacher/dashboard"
                     : "redirect:/";
 

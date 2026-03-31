@@ -1,5 +1,8 @@
 package com.teachersession.exceptions.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum AuthErrorCode {
 
     EMAIL_NOT_FOUND("Email not found"),
@@ -12,7 +15,4 @@ public enum AuthErrorCode {
         this.message = message;
     }
 
-    public String getMessage() {
-        return message;
-    }
 }
