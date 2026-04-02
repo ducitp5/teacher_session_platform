@@ -112,6 +112,38 @@ public class SessionService {
         return sessionMapper.toDto(sessionRepository.save(session));
     }
 
+    @Transactional
+    public SessionDto updateSession(SessionDto dto, Long teacherId) {
+        Session session = sessionRepository.findById(dto.getId())
+                .orElseThrow(() -> new SessionException(SessionErrorCode.SESSION_NOT_FOUND));
+
+        if (!session.getTeacher().getId().equals(teacherId)) {
+            throw new SessionException(SessionErrorCode.NOT_AUTHORIZED_TO_CANCEL); // Assuming NOT_AUTHORIZED can be used here too
+        }
+
+        if (session.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new SessionException(SessionErrorCode.CANNOT_UPDATE_STARTED_SESSION);
+        }
+
+        // We only allow updating some fields if it hasn't been cancelled
+        if (session.getStatus() == SessionStatus.CANCELLED) {
+             throw new SessionException(SessionErrorCode.SESSION_NOT_FOUND); // Quick hack, or a specific exception
+        }
+
+        session.setTitle(dto.getTitle());
+        session.setDescription(dto.getDescription());
+        session.setSubject(dto.getSubject());
+        session.setPrice(dto.getPrice());
+        session.setMaxStudents(dto.getMaxStudents());
+        session.setSessionType(dto.getSessionType());
+        session.setLocation(dto.getLocation());
+        session.setMeetingLink(dto.getMeetingLink());
+        session.setStartDate(dto.getStartDate());
+        session.setDurationMinutes(dto.getDurationMinutes());
+        
+        return sessionMapper.toDto(sessionRepository.save(session));
+    }
+
     public void sessionFilter(Map<String, Object> params) {
         String search = (String) params.get("search");
         String type = (String) params.get("type");

@@ -29,7 +29,7 @@
                         <span th:if="${courSession.sessionType?.name() == 'OFFLINE'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-orange-100 text-orange-800 tracking-wider border border-orange-200">In-Person</span>
                     </div>
-                    <a th:href="@{'/sessions/' + ${courSession.id}}" class="block">
+                    <a th:href="@{'/teacher/sessions/' + ${courSession.id}}" class="block">
                         <p class="text-lg font-bold text-slate-900 truncate mb-1"
                            th:text="${courSession.title}">Session Title</p>
                     </a>
@@ -68,7 +68,7 @@
                             Cancel
                         </button>
                     </form>
-                    <a th:href="@{'/sessions/' + ${courSession.id}}"
+                    <a th:href="@{'/teacher/sessions/' + ${courSession.id}}"
                        class="p-2 text-slate-400 hover:text-primary transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                              xmlns="http://www.w3.org/2000/svg">

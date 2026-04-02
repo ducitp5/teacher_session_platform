@@ -103,9 +103,16 @@
                 service and cancellation policy.</p>
         </div>
 
-        <div th:if="${userDto != null and userDto.role.name() == 'TEACHER'}"
-             class="text-center text-sm font-medium text-slate-500 bg-slate-50 p-4 rounded-xl">
-            Teachers cannot enroll in sessions.
+        <div th:if="${userDto != null and userDto.role.name() == 'TEACHER'}">
+            <div th:if="${courseSession.teacherId == userDto.id}">
+                <a th:href="@{'/teacher/sessions/' + ${courseSession.id}}"
+                   class="w-full flex justify-center py-4 px-4 border border-transparent text-lg font-black rounded-xl text-white bg-gradient-to-r from-slate-700 to-slate-900 hover:to-black shadow-lg shadow-slate-200 transition-all hover:-translate-y-1">
+                    Manage / View Details
+                </a>
+            </div>
+            <div th:unless="${courseSession.teacherId == userDto.id}" class="text-center text-sm font-medium text-slate-500 bg-slate-50 p-4 rounded-xl">
+                Teachers cannot enroll in sessions.
+            </div>
         </div>
     </div>
 </div>

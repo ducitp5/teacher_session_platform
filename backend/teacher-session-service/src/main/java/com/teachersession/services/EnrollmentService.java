@@ -71,6 +71,12 @@ public class EnrollmentService {
                 .collect(Collectors.toList());
     }
 
+    public List<EnrollmentDto> getSessionEnrollments(Long sessionId) {
+        return enrollmentRepository.findBySessionId(sessionId).stream()
+                .map(enrollmentMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void cancelEnrollment(Long enrollmentId, Long studentId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)

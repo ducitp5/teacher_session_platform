@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(~{::title}, ~{::content})}">
+
+<head>
+    <title>LearnHub - Teacher Session Detail</title>
+</head>
+
+<body>
+<th:block th:fragment="content">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="mb-4">
+            <a href="/teacher/dashboard" class="text-sm text-slate-500 hover:text-primary">&larr; Back to Dashboard</a>
+        </div>
+        
+        <div th:if="${param.success}" class="mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+            <p class="text-sm text-green-700" th:text="${param.success}"></p>
+        </div>
+
+        <div class="lg:grid lg:grid-cols-3 lg:gap-12">
+            <!-- Main Content Column -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 mb-8">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-indigo-100 text-indigo-800 mb-4" th:text="${courseSession.subject}">Subject</span>
+                            <h1 class="text-3xl font-extrabold text-slate-900 mb-2" th:text="${courseSession.title}">Session Title</h1>
+                            <p class="text-slate-500 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span th:text="${#temporals.format(courseSession.startDate, 'MMMM d, yyyy h:mm a')}">Date</span>
+                                <span class="mx-2">&bull;</span>
+                                <span th:text="${courseSession.durationMinutes + ' min'}">90 min</span>
+                            </p>
+                        </div>
+                        <div class="flex gap-2">
+                            <a th:href="@{'/teacher/sessions/' + ${courseSession.id} + '/edit'}"
+                               class="inline-flex items-center justify-center px-4 py-2 border border-slate-200 text-sm font-medium rounded-xl text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                Edit
+                            </a>
+                            <form th:if="${courseSession.status.name() != 'CANCELLED'}" th:action="@{'/teacher/sessions/' + ${courseSession.id} + '/cancel'}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this session?');">
+                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl text-red-700 bg-red-100 hover:bg-red-200 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    Cancel
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="prose prose-slate max-w-none text-slate-600 mb-8" th:text="${courseSession.description}">
+                        Description
+                    </div>
+
+                    <div class="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Location Details</h3>
+                        <div th:if="${courseSession.sessionType?.name() == 'ONLINE'}" class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-900">Virtual Meeting</p>
+                                <a th:href="${courseSession.meetingLink}" target="_blank" class="text-sm text-primary hover:underline block truncate max-w-xs" th:text="${courseSession.meetingLink}">Link</a>
+                            </div>
+                        </div>
+                        <div th:if="${courseSession.sessionType?.name() == 'OFFLINE'}" class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-900">In-Person Location</p>
+                                <p class="text-sm text-slate-600" th:text="${courseSession.location}">Address</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
+                    <h2 class="text-xl font-bold text-slate-900 mb-6">Registered Students (<span th:text="${courseSession.enrolledStudents}">0</span>)</h2>
+                    
+                    <div th:if="${enrollments.empty}" class="text-center text-slate-500 py-8 text-sm">
+                        No students have registered for this session yet.
+                    </div>
+                    
+                    <div th:unless="${enrollments.empty}" class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead>
+                                <tr>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Student Name</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Enrolled At</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 bg-white">
+                                <tr th:each="enrollment : ${enrollments}">
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-slate-900" th:text="${enrollment.studentName}">John Doe</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm">
+                                        <span th:if="${enrollment.status.name() == 'ACTIVE'}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        <span th:if="${enrollment.status.name() == 'CANCELLED'}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Cancelled</span>
+                                    </td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-slate-500" th:text="${#temporals.format(enrollment.enrolledAt, 'MMM d, yyyy h:mm a')}">Oct 1, 2023 10:00 AM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar column -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Session Status Overview -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Session Info</h3>
+
+                    <dl class="space-y-4">
+                        <div class="flex justify-between">
+                            <dt class="text-sm text-slate-500">Status</dt>
+                            <dd class="text-sm font-semibold">
+                                <span th:if="${courseSession.status.name() == 'OPEN'}" class="text-green-600">Open</span>
+                                <span th:if="${courseSession.status.name() == 'FULL'}" class="text-red-500">Full</span>
+                                <span th:if="${courseSession.status.name() == 'CANCELLED'}" class="text-slate-500">Cancelled</span>
+                                <span th:if="${courseSession.status.name() == 'COMPLETED'}" class="text-blue-500">Completed</span>
+                            </dd>
+                        </div>
+                        <div class="flex justify-between">
+                            <dt class="text-sm text-slate-500">Price</dt>
+                            <dd class="text-sm font-semibold text-slate-900" th:text="${'$' + courseSession.price}">$49</dd>
+                        </div>
+                        <div class="flex justify-between">
+                            <dt class="text-sm text-slate-500">Capacity</dt>
+                            <dd class="text-sm font-semibold text-slate-900">
+                                <span th:text="${courseSession.enrolledStudents}">0</span> / <span th:text="${courseSession.maxStudents}">10</span>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</th:block>
+</body>
+
+</html>
