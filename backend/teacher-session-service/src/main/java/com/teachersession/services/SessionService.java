@@ -15,8 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teachersession.dto.EnrollmentDto;
+import com.teachersession.dto.UserDto;
+import com.teachersession.entities.enums.EnrollmentStatus;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.ui.Model;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +33,7 @@ public class SessionService {
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
     private final SessionMapper sessionMapper;
+    private final EnrollmentService enrollmentService;
 
     @Transactional
     public SessionDto createSession(SessionDto dto) {
@@ -102,5 +110,63 @@ public class SessionService {
         
         session.setStatus(SessionStatus.CANCELLED);
         return sessionMapper.toDto(sessionRepository.save(session));
+    }
+
+    public void sessionFilter(Map<String, Object> params) {
+        String search = (String) params.get("search");
+        String type = (String) params.get("type");
+        
+        Object enrolledObj = params.get("enrolledOnly");
+        boolean enrolledOnly = enrolledObj != null && Boolean.parseBoolean(enrolledObj.toString());
+        
+        Model model = (Model) params.get("model");
+        HttpSession httpSession = (HttpSession) params.get("httpSession");
+
+        SessionType sessionType = null;
+
+        if (type != null && !type.trim().isEmpty()) {
+            try {
+                sessionType = SessionType.valueOf(type.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // ignore invalid type
+            }
+        }
+        
+        List<SessionDto> sessionDtos = searchSessions(search, sessionType);
+        
+        UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
+        if (userDto != null) {
+            model.addAttribute("userDto", userDto);
+            
+            if (userDto.getRole() == Role.STUDENT) {
+                List<Long> enrolledSessionIds = enrollmentService.getStudentEnrollments(userDto.getId()).stream()
+                        .filter(e -> e.getStatus() == EnrollmentStatus.ACTIVE)
+                        .map(EnrollmentDto::getSessionId)
+                        .collect(Collectors.toList());
+                model.addAttribute("enrolledSessionIds", enrolledSessionIds);
+                
+                if (enrolledOnly) {
+                    sessionDtos = sessionDtos.stream()
+                        .filter(s -> enrolledSessionIds.contains(s.getId()))
+                        .collect(Collectors.toList());
+                }
+            } else if (userDto.getRole() == Role.TEACHER) {
+                List<Long> teacherSessionIds = getSessionsByTeacher(userDto.getId()).stream()
+                        .map(SessionDto::getId)
+                        .collect(Collectors.toList());
+                model.addAttribute("enrolledSessionIds", teacherSessionIds);
+                
+                if (enrolledOnly) {
+                    sessionDtos = sessionDtos.stream()
+                        .filter(s -> teacherSessionIds.contains(s.getId()))
+                        .collect(Collectors.toList());
+                }
+            }
+        }
+        
+        model.addAttribute("sessionDtos", sessionDtos);
+        model.addAttribute("currentSearch", search);
+        model.addAttribute("currentType", type);
+        model.addAttribute("enrolledOnly", enrolledOnly);
     }
 }
