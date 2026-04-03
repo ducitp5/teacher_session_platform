@@ -1,21 +1,26 @@
 <div class="mt-10 lg:mt-0">
-    <div
-            class="bg-white rounded-3xl shadow-xl shadow-indigo-100/40 border border-slate-100 p-8 sticky top-24">
+    <div class="bg-white rounded-3xl shadow-xl shadow-indigo-100/40 border border-slate-100 p-8 sticky top-24">
 
         <div class="flex justify-between items-end mb-6">
             <div>
                 <p class="text-slate-500 font-medium text-sm uppercase tracking-wide">Price</p>
-                <p class="text-4xl font-black text-slate-900 mt-1" th:text="${'$' + courseSession.price}">$49
+                <p class="text-4xl font-black text-slate-900 mt-1" th:text="${'$' + courseSession.price}">
+                    $49
                 </p>
             </div>
             <div class="text-right">
-                                <span th:if="${courseSession.status?.name() == 'OPEN'}"
-                                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-green-100 text-green-800">Available</span>
+                <span th:if="${courseSession.status?.name() == 'OPEN'}"
+                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-green-100 text-green-800">
+                    Available
+                </span>
                 <span th:if="${courseSession.status?.name() == 'FULL'}"
-                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-red-100 text-red-800">Sold
-                                    Out</span>
+                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-red-100 text-red-800">
+                    Sold Out
+                </span>
                 <span th:if="${courseSession.status?.name() == 'CANCELLED'}"
-                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-slate-100 text-slate-800">Cancelled</span>
+                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold leading-5 bg-slate-100 text-slate-800">
+                    Cancelled
+                </span>
             </div>
         </div>
 
@@ -30,9 +35,13 @@
                 </svg>
                 <div>
                     <p class="text-sm font-medium text-slate-900"
-                       th:text="${#temporals.format(courseSession.startDate, 'EEEE, MMMM d, yyyy')}">Date</p>
+                       th:text="${#temporals.format(courseSession.startDate, 'EEEE, MMMM d, yyyy')}">
+                        Date
+                    </p>
                     <p class="text-sm text-slate-500"
-                       th:text="${#temporals.format(courseSession.startDate, 'h:mm a')}">Time</p>
+                       th:text="${#temporals.format(courseSession.startDate, 'h:mm a')}">
+                        Time
+                    </p>
                 </div>
             </div>
             <div class="flex items-start">
@@ -43,7 +52,9 @@
                 </svg>
                 <div>
                     <p class="text-sm font-medium text-slate-900"
-                       th:text="${courseSession.durationMinutes + ' minutes'}">Duration</p>
+                       th:text="${courseSession.durationMinutes + ' minutes'}">
+                        Duration
+                    </p>
                 </div>
             </div>
             <div class="flex items-start">
@@ -58,9 +69,12 @@
                 <div>
                     <p class="text-sm font-medium text-slate-900"
                        th:text="${courseSession.sessionType?.name() == 'ONLINE' ? 'Online Meeting' : courseSession.location}">
-                        Location</p>
+                        Location
+                    </p>
                     <p th:if="${courseSession.sessionType?.name() == 'ONLINE'}"
-                       class="text-xs text-slate-500 mt-1">Link provided after enrollment</p>
+                       class="text-xs text-slate-500 mt-1">
+                        Link provided after enrollment
+                    </p>
                 </div>
             </div>
             <div class="flex items-start">
@@ -73,7 +87,8 @@
                 <div class="w-full">
                     <p class="text-sm font-medium text-slate-900 mb-1"
                        th:text="${courseSession.enrolledStudents + ' / ' + courseSession.maxStudents + ' Enrolled'}">
-                        0 / 10 Enrolled</p>
+                        0 / 10 Enrolled
+                    </p>
                     <div class="w-full bg-slate-100 rounded-full h-2">
                         <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full"
                              th:style="'width: ' + (${courseSession.enrolledStudents} * 100 / ${courseSession.maxStudents}) + '%'">
@@ -88,19 +103,33 @@
              class="text-center p-4 bg-slate-50 rounded-xl border border-slate-100 mb-4">
             <p class="text-sm text-slate-600 mb-3">Please log in as a student to enroll.</p>
             <a href="/login"
-               class="inline-block px-4 py-2 border border-slate-300 shadow-sm text-sm font-bold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-colors">Log
-                In</a>
+               class="inline-block px-4 py-2 border border-slate-300 shadow-sm text-sm font-bold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-colors">
+                Log In
+            </a>
         </div>
 
         <div th:if="${userDto != null and userDto.role.name() == 'STUDENT' and courseSession.status?.name() == 'OPEN'}">
-            <form th:action="@{'/sessions/' + ${courseSession.id} + '/enroll'}" method="POST">
-                <button type="submit"
-                        class="w-full flex justify-center py-4 px-4 border border-transparent text-lg font-black rounded-xl text-white bg-gradient-to-r from-primary to-primary/90 hover:to-primary shadow-lg shadow-indigo-200 transition-all hover:-translate-y-1">
-                    Enroll Now
+            <div th:if="${isEnrolled}" class="text-center">
+                <button disabled
+                        class="w-full flex justify-center py-4 px-4 border border-transparent text-lg font-black rounded-xl text-white bg-slate-400 cursor-not-allowed shadow-inner transition-all">
+                    Already Enrolled
                 </button>
-            </form>
-            <p class="text-xs text-center text-slate-500 mt-4">By enrolling, you agree to our terms of
-                service and cancellation policy.</p>
+                <p class="text-xs text-center text-green-600 font-medium mt-4">
+                    <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    You are registered for this session.
+                </p>
+            </div>
+            <div th:unless="${isEnrolled}">
+                <form th:action="@{'/sessions/' + ${courseSession.id} + '/enroll'}" method="POST">
+                    <button type="submit"
+                            class="w-full flex justify-center py-4 px-4 border border-transparent text-lg font-black rounded-xl text-white bg-gradient-to-r from-primary to-primary/90 hover:to-primary shadow-lg shadow-indigo-200 transition-all hover:-translate-y-1">
+                        Enroll Now
+                    </button>
+                </form>
+                <p class="text-xs text-center text-slate-500 mt-4">
+                    By enrolling, you agree to our terms of service and cancellation policy.
+                </p>
+            </div>
         </div>
 
         <div th:if="${userDto != null and userDto.role.name() == 'TEACHER'}">

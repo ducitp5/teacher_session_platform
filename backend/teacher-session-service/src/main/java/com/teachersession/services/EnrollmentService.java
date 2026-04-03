@@ -77,8 +77,15 @@ public class EnrollmentService {
                 .collect(Collectors.toList());
     }
 
+    public boolean isStudentEnrolled(Long sessionId, Long studentId) {
+        return enrollmentRepository.findBySessionIdAndStudentId(sessionId, studentId)
+                .map(enrollment -> enrollment.getStatus() == EnrollmentStatus.ACTIVE)
+                .orElse(false);
+    }
+
     @Transactional
     public void cancelEnrollment(Long enrollmentId, Long studentId) {
+        
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.ENROLLMENT_NOT_FOUND));
                 

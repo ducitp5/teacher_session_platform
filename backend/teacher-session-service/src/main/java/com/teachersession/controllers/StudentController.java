@@ -10,12 +10,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.teachersession.services.StudentService;
 
 @Controller
 @RequestMapping("/student")
 @RequiredArgsConstructor
-public class StudentController {
+public class StudentController extends UserController {
 
+    private final StudentService studentService;
     private final EnrollmentService enrollmentService;
 
     @GetMapping("/dashboard")

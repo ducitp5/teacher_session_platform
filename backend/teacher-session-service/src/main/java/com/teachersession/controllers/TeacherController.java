@@ -3,8 +3,7 @@ package com.teachersession.controllers;
 import com.teachersession.dto.SessionDto;
 import com.teachersession.dto.UserDto;
 import com.teachersession.dto.EnrollmentDto;
-import com.teachersession.services.SessionService;
-import com.teachersession.services.EnrollmentService;
+import com.teachersession.services.TeacherService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,17 +15,16 @@ import java.util.List;
 @Controller
 @RequestMapping("/teacher")
 @RequiredArgsConstructor
-public class TeacherController {
+public class TeacherController extends UserController {
 
-    private final SessionService sessionService;
-    private final EnrollmentService enrollmentService;
+    private final TeacherService teacherService;
 
     @GetMapping("/dashboard")
     public String teacherDashboard(Model model, HttpSession httpSession) {
 
         Long teacherId = ((UserDto) httpSession.getAttribute("userDto")).getId();
         
-        List<SessionDto> sessions = sessionService.getSessionsByTeacher(teacherId);
+        List<SessionDto> sessions = teacherService.getTeacherSessions(teacherId);
         model.addAttribute("courSessions", sessions);
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
         if (userDto != null) {
@@ -46,8 +44,7 @@ public class TeacherController {
         Long teacherId = ((UserDto) httpSession.getAttribute("userDto")).getId();
         
         try {
-            sessionDto.setTeacherId(teacherId);
-            sessionService.createSession(sessionDto);
+            teacherService.createTeacherSession(sessionDto, teacherId);
             return "redirect:/teacher/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -60,7 +57,7 @@ public class TeacherController {
         Long teacherId = ((UserDto) httpSession.getAttribute("userDto")).getId();
         
         try {
-            sessionService.cancelSession(id, teacherId);
+            teacherService.cancelTeacherSession(id, teacherId);
             return "redirect:/teacher/dashboard?success=cancelled";
         } catch (Exception e) {
             return "redirect:/teacher/dashboard?error=" + e.getMessage();
@@ -69,9 +66,9 @@ public class TeacherController {
 
     @GetMapping("/sessions/{id}")
     public String teacherSessionDetails(@PathVariable Long id, Model model, HttpSession httpSession) {
-        SessionDto sessionDto = sessionService.getSessionById(id);
+        SessionDto sessionDto = teacherService.getSessionById(id);
         
-        List<EnrollmentDto> enrollments = enrollmentService.getSessionEnrollments(id);
+        List<EnrollmentDto> enrollments = teacherService.getSessionEnrollments(id);
         model.addAttribute("courseSession", sessionDto);
         model.addAttribute("enrollments", enrollments);
         
@@ -85,7 +82,7 @@ public class TeacherController {
 
     @GetMapping("/sessions/{id}/edit")
     public String showEditSessionForm(@PathVariable Long id, Model model, HttpSession httpSession) {
-        SessionDto sessionDto = sessionService.getSessionById(id);
+        SessionDto sessionDto = teacherService.getSessionById(id);
         model.addAttribute("sessionDto", sessionDto);
         
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
@@ -101,7 +98,7 @@ public class TeacherController {
         Long teacherId = ((UserDto) httpSession.getAttribute("userDto")).getId();
         
         try {
-            sessionService.updateSession(sessionDto, teacherId);
+            teacherService.updateTeacherSession(sessionDto, teacherId);
             return "redirect:/teacher/sessions/" + sessionDto.getId() + "?success=updated";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

@@ -57,6 +57,11 @@ public class SessionController {
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
         if (userDto != null) {
             model.addAttribute("userDto", userDto);
+            
+            if (userDto.getRole() == Role.STUDENT) {
+                boolean isEnrolled = enrollmentService.isStudentEnrolled(sessionId, userDto.getId());
+                model.addAttribute("isEnrolled", isEnrolled);
+            }
         }
         
         return "sessions/detail";
