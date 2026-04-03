@@ -7,7 +7,8 @@ import com.teachersession.entities.User;
 import com.teachersession.entities.enums.EnrollmentStatus;
 import com.teachersession.entities.enums.Role;
 import com.teachersession.entities.enums.SessionStatus;
-import com.teachersession.exceptions.ResourceNotFoundException;
+import com.teachersession.exceptions.EnrollmentException;
+import com.teachersession.exceptions.enums.EnrollmentErrorCode;
 import com.teachersession.mappers.EnrollmentMapper;
 import com.teachersession.repositories.EnrollmentRepository;
 import com.teachersession.repositories.SessionRepository;
@@ -31,21 +32,21 @@ public class EnrollmentService {
     @Transactional
     public EnrollmentDto enrollStudent(Long sessionId, Long studentId) {
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Session not found"));
+                .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.SESSION_NOT_FOUND));
                 
         User student = userRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+                .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.STUDENT_NOT_FOUND));
                 
         if (student.getRole() != Role.STUDENT) {
-            throw new IllegalArgumentException("Only students can enroll in sessions");
+            throw new EnrollmentException(EnrollmentErrorCode.ONLY_STUDENTS_CAN_ENROLL);
         }
         
         if (session.getStatus() != SessionStatus.OPEN) {
-            throw new IllegalArgumentException("Session is not open for enrollment");
+            throw new EnrollmentException(EnrollmentErrorCode.SESSION_NOT_OPEN);
         }
         
         if (enrollmentRepository.findBySessionIdAndStudentId(sessionId, studentId).isPresent()) {
-            throw new IllegalArgumentException("Student is already enrolled in this session");
+            throw new EnrollmentException(EnrollmentErrorCode.ALREADY_ENROLLED);
         }
         
         Enrollment enrollment = Enrollment.builder()
@@ -70,13 +71,26 @@ public class EnrollmentService {
                 .collect(Collectors.toList());
     }
 
+    public List<EnrollmentDto> getSessionEnrollments(Long sessionId) {
+        return enrollmentRepository.findBySessionId(sessionId).stream()
+                .map(enrollmentMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public boolean isStudentEnrolled(Long sessionId, Long studentId) {
+        return enrollmentRepository.findBySessionIdAndStudentId(sessionId, studentId)
+                .map(enrollment -> enrollment.getStatus() == EnrollmentStatus.ACTIVE)
+                .orElse(false);
+    }
+
     @Transactional
     public void cancelEnrollment(Long enrollmentId, Long studentId) {
+        
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found"));
+                .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.ENROLLMENT_NOT_FOUND));
                 
         if (!enrollment.getStudent().getId().equals(studentId)) {
-            throw new IllegalArgumentException("Not authorized to cancel this enrollment");
+            throw new EnrollmentException(EnrollmentErrorCode.NOT_AUTHORIZED_TO_CANCEL);
         }
         
         enrollment.setStatus(EnrollmentStatus.CANCELLED);

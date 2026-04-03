@@ -32,16 +32,10 @@ public class DatabaseSeeder {
     private final SessionRepository sessionRepository;
     private final EnrollmentRepository enrollmentRepository;
 
-
-
     @Transactional
     public Map<String, Object> seed() {
 
         log.info("Starting database seeding...");
-
-        enrollmentRepository.deleteAll();
-        sessionRepository.deleteAll();
-        userRepository.deleteAll();
 
         /*
          * USERS
@@ -50,13 +44,24 @@ public class DatabaseSeeder {
 
         for (Object[] u : USERS) {
 
-            User user = User.builder()
-                    .firstName((String) u[0])
-                    .lastName((String) u[1])
-                    .email((String) u[2])
-                    .password((String) u[3])
-                    .role((Role) u[4])
-                    .build();
+            String email = (String) u[2];
+
+            User user = userRepository.findByEmail(email)
+                    .map(existing -> {
+                        existing.setFirstName((String) u[0]);
+                        existing.setLastName((String) u[1]);
+                        existing.setPassword((String) u[3]);
+                        existing.setRole((Role) u[4]);
+                        return existing;
+                    })
+                    .orElseGet(() -> User.builder()
+                            .firstName((String) u[0])
+                            .lastName((String) u[1])
+                            .email(email)
+                            .password((String) u[3])
+                            .role((Role) u[4])
+                            .build()
+                    );
 
             users.add(user);
         }
@@ -71,22 +76,40 @@ public class DatabaseSeeder {
         for (Object[] s : SESSIONS) {
 
             User teacher = users.get((Integer) s[0]);
+            String title = (String) s[1];
 
-            Session session = Session.builder()
-                    .teacher(teacher)
-                    .title((String) s[1])
-                    .description((String) s[2])
-                    .subject((String) s[3])
-                    .price(new BigDecimal((String) s[4]))
-                    .maxStudents((Integer) s[5])
-                    .enrolledStudents((Integer) s[6])
-                    .sessionType((SessionType) s[7])
-                    .meetingLink((String) s[8])
-                    .location((String) s[9])
-                    .startDate(LocalDateTime.now().plusDays((Integer) s[10]))
-                    .durationMinutes((Integer) s[11])
-                    .status((SessionStatus) s[12])
-                    .build();
+            Session session = sessionRepository
+                    .findByTitleAndTeacher(title, teacher)
+                    .map(existing -> {
+                        existing.setDescription((String) s[2]);
+                        existing.setSubject((String) s[3]);
+                        existing.setPrice(new BigDecimal((String) s[4]));
+                        existing.setMaxStudents((Integer) s[5]);
+                        existing.setEnrolledStudents((Integer) s[6]);
+                        existing.setSessionType((SessionType) s[7]);
+                        existing.setMeetingLink((String) s[8]);
+                        existing.setLocation((String) s[9]);
+                        existing.setStartDate(LocalDateTime.now().plusDays((Integer) s[10]));
+                        existing.setDurationMinutes((Integer) s[11]);
+                        existing.setStatus((SessionStatus) s[12]);
+                        return existing;
+                    })
+                    .orElseGet(() -> Session.builder()
+                            .teacher(teacher)
+                            .title(title)
+                            .description((String) s[2])
+                            .subject((String) s[3])
+                            .price(new BigDecimal((String) s[4]))
+                            .maxStudents((Integer) s[5])
+                            .enrolledStudents((Integer) s[6])
+                            .sessionType((SessionType) s[7])
+                            .meetingLink((String) s[8])
+                            .location((String) s[9])
+                            .startDate(LocalDateTime.now().plusDays((Integer) s[10]))
+                            .durationMinutes((Integer) s[11])
+                            .status((SessionStatus) s[12])
+                            .build()
+                    );
 
             sessions.add(session);
         }
@@ -103,11 +126,18 @@ public class DatabaseSeeder {
             Session session = sessions.get((Integer) e[0]);
             User student = users.get((Integer) e[1]);
 
-            Enrollment enrollment = Enrollment.builder()
-                    .session(session)
-                    .student(student)
-                    .status((EnrollmentStatus) e[2])
-                    .build();
+            Enrollment enrollment = enrollmentRepository
+                    .findBySessionAndStudent(session, student)
+                    .map(existing -> {
+                        existing.setStatus((EnrollmentStatus) e[2]);
+                        return existing;
+                    })
+                    .orElseGet(() -> Enrollment.builder()
+                            .session(session)
+                            .student(student)
+                            .status((EnrollmentStatus) e[2])
+                            .build()
+                    );
 
             enrollments.add(enrollment);
         }

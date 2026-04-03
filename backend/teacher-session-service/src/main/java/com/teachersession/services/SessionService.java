@@ -6,7 +6,8 @@ import com.teachersession.entities.User;
 import com.teachersession.entities.enums.Role;
 import com.teachersession.entities.enums.SessionStatus;
 import com.teachersession.entities.enums.SessionType;
-import com.teachersession.exceptions.ResourceNotFoundException;
+import com.teachersession.exceptions.SessionException;
+import com.teachersession.exceptions.enums.SessionErrorCode;
 import com.teachersession.mappers.SessionMapper;
 import com.teachersession.repositories.SessionRepository;
 import com.teachersession.repositories.UserRepository;
@@ -14,8 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teachersession.dto.EnrollmentDto;
+import com.teachersession.dto.UserDto;
+import com.teachersession.entities.enums.EnrollmentStatus;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.ui.Model;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,22 +33,23 @@ public class SessionService {
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
     private final SessionMapper sessionMapper;
+    private final EnrollmentService enrollmentService;
 
     @Transactional
     public SessionDto createSession(SessionDto dto) {
         User teacher = userRepository.findById(dto.getTeacherId())
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found"));
+                .orElseThrow(() -> new SessionException(SessionErrorCode.TEACHER_NOT_FOUND));
                 
         if (teacher.getRole() != Role.TEACHER) {
-            throw new IllegalArgumentException("Only teachers can create sessions");
+            throw new SessionException(SessionErrorCode.ONLY_TEACHERS_CAN_CREATE_SESSIONS);
         }
         
         if (dto.getSessionType() == SessionType.ONLINE && (dto.getMeetingLink() == null || dto.getMeetingLink().isEmpty())) {
-            throw new IllegalArgumentException("Online sessions require a meeting link");
+            throw new SessionException(SessionErrorCode.ONLINE_SESSION_REQUIRES_MEETING_LINK);
         }
         
         if (dto.getSessionType() == SessionType.OFFLINE && (dto.getLocation() == null || dto.getLocation().isEmpty())) {
-            throw new IllegalArgumentException("Offline sessions require a location");
+            throw new SessionException(SessionErrorCode.OFFLINE_SESSION_REQUIRES_LOCATION);
         }
 
         Session session = Session.builder()
@@ -67,10 +76,17 @@ public class SessionService {
                 .collect(Collectors.toList());
     }
 
+    public List<SessionDto> searchSessions(String search, SessionType type) {
+        String finalSearch = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+        return sessionRepository.searchSessions(finalSearch, type).stream()
+                .map(sessionMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public SessionDto getSessionById(Long id) {
         return sessionRepository.findById(id)
                 .map(sessionMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Session not found"));
+                .orElseThrow(() -> new SessionException(SessionErrorCode.SESSION_NOT_FOUND));
     }
     
     public List<SessionDto> getSessionsByTeacher(Long teacherId) {
@@ -82,17 +98,107 @@ public class SessionService {
     @Transactional
     public SessionDto cancelSession(Long sessionId, Long teacherId) {
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Session not found"));
+                .orElseThrow(() -> new SessionException(SessionErrorCode.SESSION_NOT_FOUND));
                 
         if (!session.getTeacher().getId().equals(teacherId)) {
-            throw new IllegalArgumentException("Not authorized to cancel this session");
+            throw new SessionException(SessionErrorCode.NOT_AUTHORIZED_TO_CANCEL);
         }
         
         if (session.getStartDate().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Cannot cancel a session that has already started");
+            throw new SessionException(SessionErrorCode.CANNOT_CANCEL_STARTED_SESSION);
         }
         
         session.setStatus(SessionStatus.CANCELLED);
         return sessionMapper.toDto(sessionRepository.save(session));
+    }
+
+    @Transactional
+    public SessionDto updateSession(SessionDto dto, Long teacherId) {
+        Session session = sessionRepository.findById(dto.getId())
+                .orElseThrow(() -> new SessionException(SessionErrorCode.SESSION_NOT_FOUND));
+
+        if (!session.getTeacher().getId().equals(teacherId)) {
+            throw new SessionException(SessionErrorCode.NOT_AUTHORIZED_TO_CANCEL); // Assuming NOT_AUTHORIZED can be used here too
+        }
+
+        if (session.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new SessionException(SessionErrorCode.CANNOT_UPDATE_STARTED_SESSION);
+        }
+
+        // We only allow updating some fields if it hasn't been cancelled
+        if (session.getStatus() == SessionStatus.CANCELLED) {
+             throw new SessionException(SessionErrorCode.SESSION_NOT_FOUND); // Quick hack, or a specific exception
+        }
+
+        session.setTitle(dto.getTitle());
+        session.setDescription(dto.getDescription());
+        session.setSubject(dto.getSubject());
+        session.setPrice(dto.getPrice());
+        session.setMaxStudents(dto.getMaxStudents());
+        session.setSessionType(dto.getSessionType());
+        session.setLocation(dto.getLocation());
+        session.setMeetingLink(dto.getMeetingLink());
+        session.setStartDate(dto.getStartDate());
+        session.setDurationMinutes(dto.getDurationMinutes());
+        
+        return sessionMapper.toDto(sessionRepository.save(session));
+    }
+
+    public void sessionFilter(Map<String, Object> params) {
+        String search = (String) params.get("search");
+        String type = (String) params.get("type");
+        
+        Object enrolledObj = params.get("enrolledOnly");
+        boolean enrolledOnly = enrolledObj != null && Boolean.parseBoolean(enrolledObj.toString());
+        
+        Model model = (Model) params.get("model");
+        HttpSession httpSession = (HttpSession) params.get("httpSession");
+
+        SessionType sessionType = null;
+
+        if (type != null && !type.trim().isEmpty()) {
+            try {
+                sessionType = SessionType.valueOf(type.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // ignore invalid type
+            }
+        }
+        
+        List<SessionDto> sessionDtos = searchSessions(search, sessionType);
+        
+        UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
+        if (userDto != null) {
+            model.addAttribute("userDto", userDto);
+            
+            if (userDto.getRole() == Role.STUDENT) {
+                List<Long> enrolledSessionIds = enrollmentService.getStudentEnrollments(userDto.getId()).stream()
+                        .filter(e -> e.getStatus() == EnrollmentStatus.ACTIVE)
+                        .map(EnrollmentDto::getSessionId)
+                        .collect(Collectors.toList());
+                model.addAttribute("enrolledSessionIds", enrolledSessionIds);
+                
+                if (enrolledOnly) {
+                    sessionDtos = sessionDtos.stream()
+                        .filter(s -> enrolledSessionIds.contains(s.getId()))
+                        .collect(Collectors.toList());
+                }
+            } else if (userDto.getRole() == Role.TEACHER) {
+                List<Long> teacherSessionIds = getSessionsByTeacher(userDto.getId()).stream()
+                        .map(SessionDto::getId)
+                        .collect(Collectors.toList());
+                model.addAttribute("enrolledSessionIds", teacherSessionIds);
+                
+                if (enrolledOnly) {
+                    sessionDtos = sessionDtos.stream()
+                        .filter(s -> teacherSessionIds.contains(s.getId()))
+                        .collect(Collectors.toList());
+                }
+            }
+        }
+        
+        model.addAttribute("sessionDtos", sessionDtos);
+        model.addAttribute("currentSearch", search);
+        model.addAttribute("currentType", type);
+        model.addAttribute("enrolledOnly", enrolledOnly);
     }
 }

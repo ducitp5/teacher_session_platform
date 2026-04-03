@@ -24,55 +24,7 @@
 <body class="bg-slate-50 min-h-screen font-sans antialiased text-slate-800 flex flex-col">
 
 <!-- Navigation -->
-<nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="/"
-                       class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-tight">
-                        LearnHub
-                    </a>
-                </div>
-                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                    <a href="/"
-                       class="border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                        Browse Sessions
-                    </a>
-                </div>
-            </div>
-            <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
-                <!-- Unauthenticated -->
-                <th:block th:if="${session.userId == null}">
-                    <a href="/login"
-                       class="text-slate-500 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">Login</a>
-                    <a href="/register"
-                       class="bg-primary hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow-md shadow-indigo-200 transition-all hover:-translate-y-0.5">Sign
-                        up</a>
-                </th:block>
-
-                <!-- Authenticated -->
-                <th:block th:if="${session.userId != null}">
-                    <div class="flex items-center space-x-4">
-                            <span class="text-sm font-medium text-slate-500">Welcome, <span
-                                    class="text-slate-900 font-bold"
-                                    th:text="${session.userFirstName}">User</span></span>
-
-                        <a th:if="${session.userRole == 'TEACHER'}" href="/teacher/dashboard"
-                           class="text-sm font-medium text-primary hover:text-indigo-800 transition-colors">Teacher
-                            Dashboard</a>
-                        <a th:if="${session.userRole == 'STUDENT'}" href="/student/dashboard"
-                           class="text-sm font-medium text-primary hover:text-indigo-800 transition-colors">My
-                            Enrollments</a>
-
-                        <a href="/logout"
-                           class="text-sm font-medium text-slate-500 hover:text-red-600 transition-colors">Logout</a>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-    </div>
-</nav>
+<div th:replace="include/navigation">&copy; 2016 The Static Templates</div>
 
 <!-- Main Content -->
 <main class="flex-grow">
@@ -80,13 +32,7 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-white border-t border-slate-200 mt-12 py-8 transition-colors">
-    <div class="max-w-7xl mx-auto px-4 overflow-hidden sm:px-6 lg:px-8">
-        <p class="mt-4 text-center text-sm text-slate-400">
-            &copy; 2026 LearnHub Platform. All rights reserved.
-        </p>
-    </div>
-</footer>
+<div th:replace="include/footer">&copy; 2016 The Static Templates</div>
 
 </body>
 

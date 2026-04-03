@@ -2,6 +2,7 @@ package com.teachersession.controllers;
 
 import com.teachersession.dto.UserDto;
 import com.teachersession.entities.enums.Role;
+import com.teachersession.exceptions.AuthException;
 import com.teachersession.services.AuthService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,20 +28,17 @@ public class AuthController {
                         @RequestParam String password,
                         HttpSession session,
                         Model model) {
-        Optional<UserDto> userOpt = authService.login(email, password);
-        if (userOpt.isPresent()) {
-            UserDto user = userOpt.get();
-            session.setAttribute("userId", user.getId());
-            session.setAttribute("userRole", user.getRole().name());
-            session.setAttribute("userFirstName", user.getFirstName());
-            
-            if (user.getRole() == Role.TEACHER) {
-                return "redirect:/teacher/dashboard";
-            } else {
-                return "redirect:/";
-            }
-        } else {
-            model.addAttribute("error", "Invalid email or password");
+        try {
+            UserDto userDto = authService.login(email, password);
+
+            session.setAttribute("userDto", userDto);
+
+            return (userDto.getRole() == Role.TEACHER)
+                    ? "redirect:/teacher/dashboard"
+                    : "redirect:/";
+
+        } catch (AuthException ex) {
+            model.addAttribute("error", ex.getErrorCode().getMessage());
             return "auth/login";
         }
     }
