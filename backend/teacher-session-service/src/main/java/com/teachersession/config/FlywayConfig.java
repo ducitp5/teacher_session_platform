@@ -19,7 +19,7 @@ public class FlywayConfig {
     @Value("${spring.flyway.locations:classpath:/db/migration}")
     private String locations;
 
-    @Bean(initMethod = "migrate")
+//    @Bean(initMethod = "migrate")
     public Flyway flyway(DataSource dataSource) {
         return Flyway.configure()
                 .dataSource(dataSource)

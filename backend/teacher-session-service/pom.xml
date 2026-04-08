@@ -78,6 +78,16 @@
           </excludes>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <configuration>
+          <url>jdbc:mysql://localhost:3306/teacher_session_platform</url>
+          <user>root</user>
+          <password></password>
+          <schemas>teacher_session_platform</schemas>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
