@@ -37,9 +37,23 @@ public class DatabaseSeeder {
 
         log.info("Starting database seeding...");
 
-        /*
-         * USERS
-         */
+        var $savedUsers = seedUsers();
+
+        var $savedSessions = seedSessions($savedUsers);
+
+        var $savedEnrollments = seedEnrollments($savedUsers, $savedSessions);
+
+        log.info("Database seeding completed successfully!");
+
+        return Map.of(
+                "users", $savedUsers,
+                "sessions", $savedSessions,
+                "enrollments", $savedEnrollments
+        );
+    }
+
+    public List<User> seedUsers() {
+
         List<User> users = new ArrayList<>();
 
         for (Object[] u : USERS) {
@@ -66,11 +80,12 @@ public class DatabaseSeeder {
             users.add(user);
         }
 
-        var $savedUsers = userRepository.saveAll(users);
+        return userRepository.saveAll(users);
 
-        /*
-         * SESSIONS
-         */
+    }
+
+    public List<Session> seedSessions(List<User> users) {
+
         List<Session> sessions = new ArrayList<>();
 
         for (Object[] s : SESSIONS) {
@@ -114,11 +129,11 @@ public class DatabaseSeeder {
             sessions.add(session);
         }
 
-        var $savedSessions = sessionRepository.saveAll(sessions);
+        return sessionRepository.saveAll(sessions);
+    }
 
-        /*
-         * ENROLLMENTS
-         */
+    public List<Enrollment> seedEnrollments(List<User> users, List<Session> sessions) {
+
         List<Enrollment> enrollments = new ArrayList<>();
 
         for (Object[] e : ENROLLMENTS) {
@@ -142,14 +157,6 @@ public class DatabaseSeeder {
             enrollments.add(enrollment);
         }
 
-        var $savedEnrollments = enrollmentRepository.saveAll(enrollments);
-
-        log.info("Database seeding completed successfully!");
-
-        return Map.of(
-                "users", $savedUsers,
-                "sessions", $savedSessions,
-                "enrollments", $savedEnrollments
-        );
+        return enrollmentRepository.saveAll(enrollments);
     }
 }

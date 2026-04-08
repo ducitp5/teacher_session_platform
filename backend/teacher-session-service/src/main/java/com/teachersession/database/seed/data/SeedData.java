@@ -7,7 +7,8 @@ public class SeedData {
     public static final Object[][] USERS = {
             {"Demo", "Teacher", "teacher@demo.com", "password123", Role.TEACHER},
             {"Demo", "Student", "student@demo.com", "password123", Role.STUDENT},
-            {"Jane", "Doe", "jane.doe@demo.com", "password123", Role.STUDENT}
+            {"Jane", "Doe", "jane.doe@demo.com", "password123", Role.STUDENT},
+            {"System", "Admin", "admin@demo.com", "password123", Role.ADMIN}
     };
 
     public static final Object[][] SESSIONS = {
