@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class StudentService extends UserService {
     
-    public StudentService(SessionService sessionService, EnrollmentService enrollmentService) {
-        super(sessionService, enrollmentService);
+    public StudentService(CourseSessionService courseSessionService, EnrollmentService enrollmentService) {
+        super(courseSessionService, enrollmentService);
     }
     
     // Student specific operations

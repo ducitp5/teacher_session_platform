@@ -1,7 +1,7 @@
 package com.teachersession.repositories;
 
 import com.teachersession.entities.Enrollment;
-import com.teachersession.entities.Session;
+import com.teachersession.entities.CourseSession;
 import com.teachersession.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,5 +15,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     List<Enrollment> findBySessionId(Long sessionId);
     Optional<Enrollment> findBySessionIdAndStudentId(Long sessionId, Long studentId);
 
-    Optional<Enrollment> findBySessionAndStudent(Session session, User student);
+    Optional<Enrollment> findBySessionAndStudent(CourseSession courseSession, User student);
 }

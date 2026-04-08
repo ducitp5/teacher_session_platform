@@ -1,14 +1,14 @@
 package com.teachersession.services;
 
-import com.teachersession.dto.SessionDto;
+import com.teachersession.dto.CourseSessionDto;
 import com.teachersession.dto.UserDto;
-import com.teachersession.entities.Session;
+import com.teachersession.entities.CourseSession;
 import com.teachersession.entities.User;
-import com.teachersession.entities.enums.SessionStatus;
+import com.teachersession.entities.enums.CourseSessionStatus;
 import com.teachersession.entities.enums.UserStatus;
-import com.teachersession.mappers.SessionMapper;
+import com.teachersession.mappers.CourseSessionMapper;
 import com.teachersession.mappers.UserMapper;
-import com.teachersession.repositories.SessionRepository;
+import com.teachersession.repositories.CourseSessionRepository;
 import com.teachersession.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final UserRepository userRepository;
-    private final SessionRepository sessionRepository;
+    private final CourseSessionRepository courseSessionRepository;
     private final UserMapper userMapper;
-    private final SessionMapper sessionMapper;
+    private final CourseSessionMapper courseSessionMapper;
 
     public List<UserDto> getAllUsers() {
         return userRepository.findAll().stream()
@@ -40,18 +40,18 @@ public class AdminService {
         userRepository.save(user);
     }
 
-    public List<SessionDto> getAllSessions() {
-        return sessionRepository.findAll().stream()
-                .map(sessionMapper::toDto)
+    public List<CourseSessionDto> getAllSessions() {
+        return courseSessionRepository.findAll().stream()
+                .map(courseSessionMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public void cancelSession(Long sessionId) {
-        Session session = sessionRepository.findById(sessionId)
+        CourseSession courseSession = courseSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
-        session.setStatus(SessionStatus.CANCELLED);
-        sessionRepository.save(session);
+        courseSession.setStatus(CourseSessionStatus.CANCELLED);
+        courseSessionRepository.save(courseSession);
     }
 
     public long getTotalUsers() {
@@ -59,6 +59,6 @@ public class AdminService {
     }
 
     public long getTotalSessions() {
-        return sessionRepository.count();
+        return courseSessionRepository.count();
     }
 }

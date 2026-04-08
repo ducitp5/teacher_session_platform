@@ -3,7 +3,7 @@ package com.teachersession.exceptions.enums;
 import lombok.Getter;
 
 @Getter
-public enum SessionErrorCode {
+public enum CourseSessionErrorCode {
 
     TEACHER_NOT_FOUND("Teacher not found"),
     ONLY_TEACHERS_CAN_CREATE_SESSIONS("Only teachers can create sessions"),
@@ -16,7 +16,7 @@ public enum SessionErrorCode {
 
     private final String message;
 
-    SessionErrorCode(String message) {
+    CourseSessionErrorCode(String message) {
         this.message = message;
     }
 

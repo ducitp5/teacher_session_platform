@@ -1,6 +1,6 @@
 package com.teachersession.controllers;
 
-import com.teachersession.dto.SessionDto;
+import com.teachersession.dto.CourseSessionDto;
 import com.teachersession.dto.UserDto;
 import com.teachersession.entities.enums.Role;
 import com.teachersession.entities.enums.UserStatus;
@@ -58,8 +58,8 @@ public class AdminController extends UserController {
     public String listSessions(Model model, HttpSession httpSession) {
         if (!isAdmin(httpSession)) return "redirect:/login";
 
-        List<SessionDto> sessions = adminService.getAllSessions();
-        model.addAttribute("sessions", sessions);
+        List<CourseSessionDto> courseSessions = adminService.getAllSessions();
+        model.addAttribute("courseSessions", courseSessions);
 
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
         model.addAttribute("userDto", userDto);

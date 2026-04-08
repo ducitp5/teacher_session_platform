@@ -2,16 +2,16 @@ package com.teachersession.services;
 
 import com.teachersession.dto.EnrollmentDto;
 import com.teachersession.entities.Enrollment;
-import com.teachersession.entities.Session;
+import com.teachersession.entities.CourseSession;
 import com.teachersession.entities.User;
 import com.teachersession.entities.enums.EnrollmentStatus;
 import com.teachersession.entities.enums.Role;
-import com.teachersession.entities.enums.SessionStatus;
+import com.teachersession.entities.enums.CourseSessionStatus;
 import com.teachersession.exceptions.EnrollmentException;
 import com.teachersession.exceptions.enums.EnrollmentErrorCode;
 import com.teachersession.mappers.EnrollmentMapper;
 import com.teachersession.repositories.EnrollmentRepository;
-import com.teachersession.repositories.SessionRepository;
+import com.teachersession.repositories.CourseSessionRepository;
 import com.teachersession.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 public class EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
-    private final SessionRepository sessionRepository;
+    private final CourseSessionRepository courseSessionRepository;
     private final UserRepository userRepository;
     private final EnrollmentMapper enrollmentMapper;
 
     @Transactional
     public EnrollmentDto enrollStudent(Long sessionId, Long studentId) {
-        Session session = sessionRepository.findById(sessionId)
+        CourseSession courseSession = courseSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.SESSION_NOT_FOUND));
                 
         User student = userRepository.findById(studentId)
@@ -41,7 +41,7 @@ public class EnrollmentService {
             throw new EnrollmentException(EnrollmentErrorCode.ONLY_STUDENTS_CAN_ENROLL);
         }
         
-        if (session.getStatus() != SessionStatus.OPEN) {
+        if (courseSession.getStatus() != CourseSessionStatus.OPEN) {
             throw new EnrollmentException(EnrollmentErrorCode.SESSION_NOT_OPEN);
         }
         
@@ -50,17 +50,17 @@ public class EnrollmentService {
         }
         
         Enrollment enrollment = Enrollment.builder()
-                .session(session)
+                .session(courseSession)
                 .student(student)
                 .status(EnrollmentStatus.ACTIVE)
                 .build();
                 
-        session.setEnrolledStudents(session.getEnrolledStudents() + 1);
+        courseSession.setEnrolledStudents(courseSession.getEnrolledStudents() + 1);
         
-        if (session.getEnrolledStudents() >= session.getMaxStudents()) {
-            session.setStatus(SessionStatus.FULL);
+        if (courseSession.getEnrolledStudents() >= courseSession.getMaxStudents()) {
+            courseSession.setStatus(CourseSessionStatus.FULL);
         }
-        sessionRepository.save(session);
+        courseSessionRepository.save(courseSession);
         
         return enrollmentMapper.toDto(enrollmentRepository.save(enrollment));
     }
@@ -96,11 +96,11 @@ public class EnrollmentService {
         enrollment.setStatus(EnrollmentStatus.CANCELLED);
         enrollmentRepository.save(enrollment);
         
-        Session session = enrollment.getSession();
-        session.setEnrolledStudents(session.getEnrolledStudents() - 1);
-        if (session.getStatus() == SessionStatus.FULL && session.getEnrolledStudents() < session.getMaxStudents()) {
-            session.setStatus(SessionStatus.OPEN);
+        CourseSession courseSession = enrollment.getSession();
+        courseSession.setEnrolledStudents(courseSession.getEnrolledStudents() - 1);
+        if (courseSession.getStatus() == CourseSessionStatus.FULL && courseSession.getEnrolledStudents() < courseSession.getMaxStudents()) {
+            courseSession.setStatus(CourseSessionStatus.OPEN);
         }
-        sessionRepository.save(session);
+        courseSessionRepository.save(courseSession);
     }
 }

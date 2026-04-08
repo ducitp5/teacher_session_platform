@@ -1,7 +1,7 @@
 package com.teachersession.dto;
 
-import com.teachersession.entities.enums.SessionStatus;
-import com.teachersession.entities.enums.SessionType;
+import com.teachersession.entities.enums.CourseSessionStatus;
+import com.teachersession.entities.enums.CourseSessionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SessionDto {
+public class CourseSessionDto {
     private Long id;
     private Long teacherId;
     private String teacherName;
@@ -24,10 +24,10 @@ public class SessionDto {
     private BigDecimal price;
     private Integer maxStudents;
     private Integer enrolledStudents;
-    private SessionType sessionType;
+    private CourseSessionType sessionType;
     private String location;
     private String meetingLink;
     private LocalDateTime startDate;
     private Integer durationMinutes;
-    private SessionStatus status;
+    private CourseSessionStatus status;
 }

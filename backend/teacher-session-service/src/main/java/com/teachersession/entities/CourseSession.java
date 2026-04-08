@@ -1,7 +1,7 @@
 package com.teachersession.entities;
 
-import com.teachersession.entities.enums.SessionStatus;
-import com.teachersession.entities.enums.SessionType;
+import com.teachersession.entities.enums.CourseSessionStatus;
+import com.teachersession.entities.enums.CourseSessionType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,13 +11,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "sessions")
+@Table(name = "course_sessions")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Session {
+public class CourseSession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +48,7 @@ public class Session {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "session_type", nullable = false)
-    private SessionType sessionType;
+    private CourseSessionType sessionType;
 
     private String location;
 
@@ -64,7 +64,7 @@ public class Session {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private SessionStatus status = SessionStatus.OPEN;
+    private CourseSessionStatus status = CourseSessionStatus.OPEN;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

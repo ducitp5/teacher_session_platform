@@ -1,9 +1,9 @@
 package com.teachersession.controllers;
 
-import com.teachersession.dto.SessionDto;
+import com.teachersession.dto.CourseSessionDto;
 import com.teachersession.dto.UserDto;
 import com.teachersession.entities.enums.Role;
-import com.teachersession.services.SessionService;
+import com.teachersession.services.CourseSessionService;
 import com.teachersession.services.EnrollmentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-public class SessionController {
+public class CourseSessionController {
 
-    private final SessionService sessionService;
+    private final CourseSessionService courseSessionService;
     private final EnrollmentService enrollmentService;
 
     @GetMapping("/")
@@ -31,7 +31,7 @@ public class SessionController {
         params.put("model", model);
         params.put("httpSession", httpSession);
 
-        sessionService.sessionFilter(params);
+        courseSessionService.sessionFilter(params);
 
         return "sessions/index";
     }
@@ -43,7 +43,7 @@ public class SessionController {
         params.put("model", model);
         params.put("httpSession", httpSession);
 
-        sessionService.sessionFilter(params);
+        courseSessionService.sessionFilter(params);
 
         return "sessions/include/session-list";
     }
@@ -51,8 +51,8 @@ public class SessionController {
     @GetMapping("/sessions/{sessionId}")
     public String sessionDetails(@PathVariable Long sessionId, Model model, HttpSession httpSession) {
 
-        SessionDto sessionDto = sessionService.getSessionById(sessionId);
-        model.addAttribute("courseSession", sessionDto);
+        CourseSessionDto courseSessionDto = courseSessionService.getSessionById(sessionId);
+        model.addAttribute("courseSession", courseSessionDto);
         
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
         if (userDto != null) {

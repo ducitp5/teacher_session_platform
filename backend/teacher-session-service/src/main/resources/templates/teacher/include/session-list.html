@@ -3,35 +3,35 @@
         <h3 class="text-xl font-bold text-slate-900">Your Sessions</h3>
     </div>
 
-    <div th:if="${courSessions.empty}" class="p-12 text-center text-slate-500">
+    <div th:if="${courseSessions.empty}" class="p-12 text-center text-slate-500">
         <p>You haven't created any sessions yet.</p>
     </div>
 
-    <ul role="list" class="divide-y divide-slate-100" th:unless="${courSessions.empty}">
-        <li th:each="courSession : ${courSessions}" class="hover:bg-slate-50 transition-colors">
+    <ul role="list" class="divide-y divide-slate-100" th:unless="${courseSessions.empty}">
+        <li th:each="courseSession : ${courseSessions}" class="hover:bg-slate-50 transition-colors">
             <div class="px-6 py-6 flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 mb-1">
                                     <span class="text-sm font-bold text-primary"
-                                          th:text="${courSession.subject}">Subject</span>
+                                          th:text="${courseSession.subject}">Subject</span>
                         
                         <!-- Status Badges -->
-                        <span th:if="${courSession.status.name() == 'OPEN'}"
+                        <span th:if="${courseSession.status.name() == 'OPEN'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-green-100 text-green-800 tracking-wider">Open</span>
-                        <span th:if="${courSession.status.name() == 'FULL'}"
+                        <span th:if="${courseSession.status.name() == 'FULL'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-red-100 text-red-800 tracking-wider">Full</span>
-                        <span th:if="${courSession.status.name() == 'CANCELLED'}"
+                        <span th:if="${courseSession.status.name() == 'CANCELLED'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-800 tracking-wider">Cancelled</span>
                               
                         <!-- Type Badges -->
-                        <span th:if="${courSession.sessionType?.name() == 'ONLINE'}"
+                        <span th:if="${courseSession.sessionType?.name() == 'ONLINE'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-indigo-100 text-indigo-800 tracking-wider border border-indigo-200">Online</span>
-                        <span th:if="${courSession.sessionType?.name() == 'OFFLINE'}"
+                        <span th:if="${courseSession.sessionType?.name() == 'OFFLINE'}"
                               class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-orange-100 text-orange-800 tracking-wider border border-orange-200">In-Person</span>
                     </div>
-                    <a th:href="@{'/teacher/sessions/' + ${courSession.id}}" class="block">
+                    <a th:href="@{'/teacher/sessions/' + ${courseSession.id}}" class="block">
                         <p class="text-lg font-bold text-slate-900 truncate mb-1"
-                           th:text="${courSession.title}">Session Title</p>
+                           th:text="${courseSession.title}">Session Title</p>
                     </a>
                     <div class="flex items-center text-sm text-slate-500 gap-4">
                         <div class="flex items-center">
@@ -42,7 +42,7 @@
                                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             <span
-                                    th:text="${#temporals.format(courSession.startDate, 'MMM d, yyyy h:mm a')}">Date</span>
+                                    th:text="${#temporals.format(courseSession.startDate, 'MMM d, yyyy h:mm a')}">Date</span>
                         </div>
                         <div class="flex items-center">
                             <svg class="flex-shrink-0 mr-1.5 h-4 w-4 text-slate-400"
@@ -52,23 +52,23 @@
                                       d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                             <span
-                                    th:text="${courSession.enrolledStudents + '/' + courSession.maxStudents + ' Enrolled'}">0/10</span>
+                                    th:text="${courseSession.enrolledStudents + '/' + courseSession.maxStudents + ' Enrolled'}">0/10</span>
                         </div>
                         <div class="flex items-center font-semibold text-slate-900">
-                            <span th:text="${'$' + courSession.price}">$49</span>
+                            <span th:text="${'$' + courseSession.price}">$49</span>
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center gap-3 pr-2">
-                    <form th:if="${courSession.status.name() != 'CANCELLED'}"
-                          th:action="@{'/teacher/sessions/' + ${courSession.id} + '/cancel'}" method="POST"
+                    <form th:if="${courseSession.status.name() != 'CANCELLED'}"
+                          th:action="@{'/teacher/sessions/' + ${courseSession.id} + '/cancel'}" method="POST"
                           onsubmit="return confirm('Are you sure you want to cancel this session?');">
                         <button type="submit"
                                 class="text-sm font-medium text-red-600 hover:text-red-900 border border-red-100 hover:bg-red-50 rounded-lg px-3 py-1.5 transition-colors">
                             Cancel
                         </button>
                     </form>
-                    <a th:href="@{'/teacher/sessions/' + ${courSession.id}}"
+                    <a th:href="@{'/teacher/sessions/' + ${courseSession.id}}"
                        class="p-2 text-slate-400 hover:text-primary transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                              xmlns="http://www.w3.org/2000/svg">
