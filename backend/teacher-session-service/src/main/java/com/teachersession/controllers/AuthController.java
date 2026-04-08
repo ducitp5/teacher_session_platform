@@ -33,9 +33,13 @@ public class AuthController {
 
             session.setAttribute("userDto", userDto);
 
-            return (userDto.getRole() == Role.TEACHER)
-                    ? "redirect:/teacher/dashboard"
-                    : "redirect:/";
+            if (userDto.getRole() == Role.ADMIN) {
+                return "redirect:/admin/dashboard";
+            } else if (userDto.getRole() == Role.TEACHER) {
+                return "redirect:/teacher/dashboard";
+            } else {
+                return "redirect:/";
+            }
 
         } catch (AuthException ex) {
             model.addAttribute("error", ex.getErrorCode().getMessage());

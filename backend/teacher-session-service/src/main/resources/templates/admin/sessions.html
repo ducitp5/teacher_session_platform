@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(~{::title}, ~{::content})}">
+<head>
+    <title>LearnHub - Session Moderation</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Session Moderation</h1>
+                <p class="mt-1 text-sm text-slate-500">List and manage platform sessions.</p>
+            </div>
+            <a href="/admin/dashboard" class="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">← Back to Dashboard</a>
+        </div>
+
+        <div th:if="${param.success}" class="mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+            <p class="text-sm text-green-700">Action completed successfully.</p>
+        </div>
+
+        <div class="bg-white shadow-sm border border-slate-100 rounded-3xl overflow-hidden">
+            <table class="min-w-full divide-y divide-slate-100">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Session</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Teacher</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Students</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Price</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-100">
+                    <tr th:each="sessionDto : ${sessions}" class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="ml-4">
+                                <div class="text-sm font-bold text-slate-900" th:text="${sessionDto.title}">Session Title</div>
+                                <div class="text-xs text-slate-500" th:text="${sessionDto.subject}">Subject</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-slate-900" th:text="${sessionDto.teacherName}">Teacher Name</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span th:class="${'px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ' + 
+                                  (sessionDto.status.name() == 'OPEN' ? 'bg-green-100 text-green-700' :
+                                   sessionDto.status.name() == 'FULL' ? 'bg-indigo-100 text-indigo-700' :
+                                   sessionDto.status.name() == 'CANCELLED' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-700')}"
+                                  th:text="${sessionDto.status}">OPEN</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-slate-900" th:text="${sessionDto.enrolledStudents + ' / ' + sessionDto.maxStudents}">0 / 10</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-bold text-slate-900" th:text="${'$' + sessionDto.price}">$0.00</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <form th:if="${sessionDto.status.name() != 'CANCELLED'}" th:action="@{'/admin/sessions/' + ${sessionDto.id} + '/cancel'}" method="POST" class="inline">
+                                <button type="submit" 
+                                        class="text-red-600 hover:text-red-900 font-bold"
+                                        onclick="return confirm('Force cancel this session?')">
+                                    Force Cancel
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
