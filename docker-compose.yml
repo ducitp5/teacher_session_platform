@@ -31,7 +31,7 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - ./database/tsp_db_data/mysql_data:/var/lib/mysql
-    restart: no
+    restart: "no"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
