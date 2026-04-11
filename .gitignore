@@ -20,3 +20,4 @@ target/
 .DS_Store
 Thumbs.db
 out/
+database/tsp_db_data/mysql_data/
