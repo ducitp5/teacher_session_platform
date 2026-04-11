@@ -7,7 +7,8 @@ public class SeedData {
     public static final Object[][] USERS = {
             {"Demo", "Teacher", "teacher@demo.com", "password123", Role.TEACHER},
             {"Demo", "Student", "student@demo.com", "password123", Role.STUDENT},
-            {"Jane", "Doe", "jane.doe@demo.com", "password123", Role.STUDENT}
+            {"Jane", "Doe", "jane.doe@demo.com", "password123", Role.STUDENT},
+            {"System", "Admin", "admin@demo.com", "password123", Role.ADMIN}
     };
 
     public static final Object[][] SESSIONS = {
@@ -19,12 +20,12 @@ public class SeedData {
                     "99.99",
                     20,
                     2,
-                    SessionType.ONLINE,
+                    CourseSessionType.ONLINE,
                     "https://zoom.us/j/demo123",
                     null,
                     3,
                     120,
-                    SessionStatus.OPEN
+                    CourseSessionStatus.OPEN
             },
             {
                     0,
@@ -34,12 +35,12 @@ public class SeedData {
                     "49.99",
                     10,
                     1,
-                    SessionType.OFFLINE,
+                    CourseSessionType.OFFLINE,
                     null,
                     "Central Library, Room 101",
                     5,
                     90,
-                    SessionStatus.OPEN
+                    CourseSessionStatus.OPEN
             }
     };
 

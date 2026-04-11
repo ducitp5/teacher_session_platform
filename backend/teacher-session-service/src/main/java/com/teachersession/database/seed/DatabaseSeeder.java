@@ -1,14 +1,14 @@
 package com.teachersession.database.seed;
 
 import com.teachersession.entities.Enrollment;
-import com.teachersession.entities.Session;
+import com.teachersession.entities.CourseSession;
 import com.teachersession.entities.User;
 import com.teachersession.entities.enums.EnrollmentStatus;
 import com.teachersession.entities.enums.Role;
-import com.teachersession.entities.enums.SessionStatus;
-import com.teachersession.entities.enums.SessionType;
+import com.teachersession.entities.enums.CourseSessionStatus;
+import com.teachersession.entities.enums.CourseSessionType;
 import com.teachersession.repositories.EnrollmentRepository;
-import com.teachersession.repositories.SessionRepository;
+import com.teachersession.repositories.CourseSessionRepository;
 import com.teachersession.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ import static com.teachersession.database.seed.data.SeedData.*;
 public class DatabaseSeeder {
 
     private final UserRepository userRepository;
-    private final SessionRepository sessionRepository;
+    private final CourseSessionRepository courseSessionRepository;
     private final EnrollmentRepository enrollmentRepository;
 
     @Transactional
@@ -37,9 +37,23 @@ public class DatabaseSeeder {
 
         log.info("Starting database seeding...");
 
-        /*
-         * USERS
-         */
+        var $savedUsers = seedUsers();
+
+        var $savedSessions = seedSessions($savedUsers);
+
+        var $savedEnrollments = seedEnrollments($savedUsers, $savedSessions);
+
+        log.info("Database seeding completed successfully!");
+
+        return Map.of(
+                "users", $savedUsers,
+                "sessions", $savedSessions,
+                "enrollments", $savedEnrollments
+        );
+    }
+
+    public List<User> seedUsers() {
+
         List<User> users = new ArrayList<>();
 
         for (Object[] u : USERS) {
@@ -66,19 +80,20 @@ public class DatabaseSeeder {
             users.add(user);
         }
 
-        var $savedUsers = userRepository.saveAll(users);
+        return userRepository.saveAll(users);
 
-        /*
-         * SESSIONS
-         */
-        List<Session> sessions = new ArrayList<>();
+    }
+
+    public List<CourseSession> seedSessions(List<User> users) {
+
+        List<CourseSession> courseSessions = new ArrayList<>();
 
         for (Object[] s : SESSIONS) {
 
             User teacher = users.get((Integer) s[0]);
             String title = (String) s[1];
 
-            Session session = sessionRepository
+            CourseSession courseSession = courseSessionRepository
                     .findByTitleAndTeacher(title, teacher)
                     .map(existing -> {
                         existing.setDescription((String) s[2]);
@@ -86,15 +101,15 @@ public class DatabaseSeeder {
                         existing.setPrice(new BigDecimal((String) s[4]));
                         existing.setMaxStudents((Integer) s[5]);
                         existing.setEnrolledStudents((Integer) s[6]);
-                        existing.setSessionType((SessionType) s[7]);
+                        existing.setSessionType((CourseSessionType) s[7]);
                         existing.setMeetingLink((String) s[8]);
                         existing.setLocation((String) s[9]);
                         existing.setStartDate(LocalDateTime.now().plusDays((Integer) s[10]));
                         existing.setDurationMinutes((Integer) s[11]);
-                        existing.setStatus((SessionStatus) s[12]);
+                        existing.setStatus((CourseSessionStatus) s[12]);
                         return existing;
                     })
-                    .orElseGet(() -> Session.builder()
+                    .orElseGet(() -> CourseSession.builder()
                             .teacher(teacher)
                             .title(title)
                             .description((String) s[2])
@@ -102,38 +117,38 @@ public class DatabaseSeeder {
                             .price(new BigDecimal((String) s[4]))
                             .maxStudents((Integer) s[5])
                             .enrolledStudents((Integer) s[6])
-                            .sessionType((SessionType) s[7])
+                            .sessionType((CourseSessionType) s[7])
                             .meetingLink((String) s[8])
                             .location((String) s[9])
                             .startDate(LocalDateTime.now().plusDays((Integer) s[10]))
                             .durationMinutes((Integer) s[11])
-                            .status((SessionStatus) s[12])
+                            .status((CourseSessionStatus) s[12])
                             .build()
                     );
 
-            sessions.add(session);
+            courseSessions.add(courseSession);
         }
 
-        var $savedSessions = sessionRepository.saveAll(sessions);
+        return courseSessionRepository.saveAll(courseSessions);
+    }
 
-        /*
-         * ENROLLMENTS
-         */
+    public List<Enrollment> seedEnrollments(List<User> users, List<CourseSession> courseSessions) {
+
         List<Enrollment> enrollments = new ArrayList<>();
 
         for (Object[] e : ENROLLMENTS) {
 
-            Session session = sessions.get((Integer) e[0]);
+            CourseSession courseSession = courseSessions.get((Integer) e[0]);
             User student = users.get((Integer) e[1]);
 
             Enrollment enrollment = enrollmentRepository
-                    .findBySessionAndStudent(session, student)
+                    .findBySessionAndStudent(courseSession, student)
                     .map(existing -> {
                         existing.setStatus((EnrollmentStatus) e[2]);
                         return existing;
                     })
                     .orElseGet(() -> Enrollment.builder()
-                            .session(session)
+                            .session(courseSession)
                             .student(student)
                             .status((EnrollmentStatus) e[2])
                             .build()
@@ -142,14 +157,6 @@ public class DatabaseSeeder {
             enrollments.add(enrollment);
         }
 
-        var $savedEnrollments = enrollmentRepository.saveAll(enrollments);
-
-        log.info("Database seeding completed successfully!");
-
-        return Map.of(
-                "users", $savedUsers,
-                "sessions", $savedSessions,
-                "enrollments", $savedEnrollments
-        );
+        return enrollmentRepository.saveAll(enrollments);
     }
-}
+}

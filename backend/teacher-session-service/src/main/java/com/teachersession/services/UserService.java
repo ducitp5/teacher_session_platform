@@ -4,6 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public abstract class UserService {
-    protected final SessionService sessionService;
+    protected final CourseSessionService courseSessionService;
     protected final EnrollmentService enrollmentService;
 }

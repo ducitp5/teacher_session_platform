@@ -1,6 +1,7 @@
 package com.teachersession.dto;
 
 import com.teachersession.entities.enums.Role;
+import com.teachersession.entities.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +19,6 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private Role role;
+    private UserStatus status;
     private LocalDateTime createdAt;
 }

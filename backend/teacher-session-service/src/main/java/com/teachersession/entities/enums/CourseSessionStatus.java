@@ -1,6 +1,6 @@
 package com.teachersession.entities.enums;
 
-public enum SessionStatus {
+public enum CourseSessionStatus {
     OPEN,
     FULL,
     CANCELLED,

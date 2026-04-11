@@ -36,6 +36,10 @@
                             </span>
                         </span>
 
+                        <a th:if="${session.userDto.role.name() == 'ADMIN'}" href="/admin/dashboard"
+                           class="text-sm font-medium text-primary hover:text-indigo-800 transition-colors">
+                            Admin Dashboard
+                        </a>
                         <a th:if="${session.userDto.role.name() == 'TEACHER'}" href="/teacher/dashboard"
                            class="text-sm font-medium text-primary hover:text-indigo-800 transition-colors">
                             Teacher Dashboard

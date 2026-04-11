@@ -1,7 +1,7 @@
 package com.teachersession.services;
 
 import com.teachersession.dto.EnrollmentDto;
-import com.teachersession.dto.SessionDto;
+import com.teachersession.dto.CourseSessionDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,32 +10,32 @@ import java.util.List;
 @Service
 public class TeacherService extends UserService {
 
-    public TeacherService(SessionService sessionService, EnrollmentService enrollmentService) {
-        super(sessionService, enrollmentService);
+    public TeacherService(CourseSessionService courseSessionService, EnrollmentService enrollmentService) {
+        super(courseSessionService, enrollmentService);
     }
 
-    public List<SessionDto> getTeacherSessions(Long teacherId) {
-        return sessionService.getSessionsByTeacher(teacherId);
+    public List<CourseSessionDto> getTeacherSessions(Long teacherId) {
+        return courseSessionService.getSessionsByTeacher(teacherId);
     }
 
-    public void createTeacherSession(SessionDto sessionDto, Long teacherId) {
-        sessionDto.setTeacherId(teacherId);
-        sessionService.createSession(sessionDto);
+    public void createTeacherSession(CourseSessionDto courseSessionDto, Long teacherId) {
+        courseSessionDto.setTeacherId(teacherId);
+        courseSessionService.createSession(courseSessionDto);
     }
 
     public void cancelTeacherSession(Long sessionId, Long teacherId) {
-        sessionService.cancelSession(sessionId, teacherId);
+        courseSessionService.cancelSession(sessionId, teacherId);
     }
 
-    public SessionDto getSessionById(Long sessionId) {
-        return sessionService.getSessionById(sessionId);
+    public CourseSessionDto getSessionById(Long sessionId) {
+        return courseSessionService.getSessionById(sessionId);
     }
 
     public List<EnrollmentDto> getSessionEnrollments(Long sessionId) {
         return enrollmentService.getSessionEnrollments(sessionId);
     }
 
-    public void updateTeacherSession(SessionDto sessionDto, Long teacherId) {
-        sessionService.updateSession(sessionDto, teacherId);
+    public void updateTeacherSession(CourseSessionDto courseSessionDto, Long teacherId) {
+        courseSessionService.updateSession(courseSessionDto, teacherId);
     }
 }

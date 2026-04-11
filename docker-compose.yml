@@ -9,10 +9,31 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_HOST=host.docker.internal
+      - DB_HOST=mysql-service
       - DB_PORT=${DB_PORT}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
     volumes:
       - ./backend/teacher-session-service:/app_src
+    depends_on:
+      mysql-service:
+        condition: service_healthy
+
+  mysql-service:
+    image: mysql:8.0
+    container_name: tsp_mysql
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_DATABASE: "${DB_NAME:-teacher_session_platform}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD:-}"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ./database/tsp_db_data/mysql_data:/var/lib/mysql
+    restart: no
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      start_period: 10s

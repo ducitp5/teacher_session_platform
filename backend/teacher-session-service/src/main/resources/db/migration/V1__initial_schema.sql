@@ -1,0 +1,50 @@
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE teacher_profiles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    bio TEXT,
+    expertise_area VARCHAR(255),
+    rating_average DECIMAL(3,2) DEFAULT 0.00,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE sessions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    teacher_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    subject VARCHAR(100) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    max_students INT NOT NULL,
+    enrolled_students INT DEFAULT 0,
+    session_type VARCHAR(50) NOT NULL,
+    location VARCHAR(255),
+    meeting_link VARCHAR(255),
+    start_date DATETIME NOT NULL,
+    duration_minutes INT NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'OPEN',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE enrollments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    session_id BIGINT NOT NULL,
+    student_id BIGINT NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE',
+    enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE(session_id, student_id)
+);

@@ -1,13 +1,13 @@
 package com.teachersession.mappers;
 
-import com.teachersession.dto.SessionDto;
-import com.teachersession.entities.Session;
+import com.teachersession.dto.CourseSessionDto;
+import com.teachersession.entities.CourseSession;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SessionMapper {
+public class CourseSessionMapper {
 
-    public SessionDto toDto(Session entity) {
+    public CourseSessionDto toDto(CourseSession entity) {
         if (entity == null) {
             return null;
         }
@@ -19,7 +19,7 @@ public class SessionMapper {
             teacherId = entity.getTeacher().getId();
         }
 
-        return SessionDto.builder()
+        return CourseSessionDto.builder()
                 .id(entity.getId())
                 .teacherId(teacherId)
                 .teacherName(teacherName)

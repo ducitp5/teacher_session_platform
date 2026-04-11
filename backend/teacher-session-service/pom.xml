@@ -50,6 +50,18 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!-- Database Migrations (Manual Versioning) -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>9.22.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-mysql</artifactId>
+      <version>9.22.3</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -64,6 +76,35 @@
               <artifactId>lombok</artifactId>
             </exclude>
           </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>read-project-properties</goal>
+            </goals>
+            <configuration>
+              <files>
+                <file>${project.basedir}/../../.env</file>
+              </files>
+              <quiet>true</quiet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <configuration>
+          <url>jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}</url>
+          <user>${DB_USER}</user>
+          <password>${DB_PASSWORD}</password>
+          <schemas>${DB_NAME}</schemas>
         </configuration>
       </plugin>
     </plugins>

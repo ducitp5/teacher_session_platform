@@ -1,6 +1,6 @@
 package com.teachersession.controllers;
 
-import com.teachersession.dto.SessionDto;
+import com.teachersession.dto.CourseSessionDto;
 import com.teachersession.dto.UserDto;
 import com.teachersession.dto.EnrollmentDto;
 import com.teachersession.services.TeacherService;
@@ -24,8 +24,8 @@ public class TeacherController extends UserController {
 
         Long teacherId = ((UserDto) httpSession.getAttribute("userDto")).getId();
         
-        List<SessionDto> sessions = teacherService.getTeacherSessions(teacherId);
-        model.addAttribute("courSessions", sessions);
+        List<CourseSessionDto> courseSessions = teacherService.getTeacherSessions(teacherId);
+        model.addAttribute("courseSessions", courseSessions);
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
         if (userDto != null) {
             model.addAttribute("userDto", userDto);
@@ -35,16 +35,16 @@ public class TeacherController extends UserController {
 
     @GetMapping("/sessions/create")
     public String showCreateSessionForm(Model model, HttpSession httpSession) {
-        model.addAttribute("sessionDto", new SessionDto());
+        model.addAttribute("courseSessionDto", new CourseSessionDto());
         return "teacher/create_session";
     }
 
     @PostMapping("/sessions/create")
-    public String createSession(@ModelAttribute SessionDto sessionDto, HttpSession httpSession, Model model) {
+    public String createSession(@ModelAttribute CourseSessionDto courseSessionDto, HttpSession httpSession, Model model) {
         Long teacherId = ((UserDto) httpSession.getAttribute("userDto")).getId();
         
         try {
-            teacherService.createTeacherSession(sessionDto, teacherId);
+            teacherService.createTeacherSession(courseSessionDto, teacherId);
             return "redirect:/teacher/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -66,10 +66,10 @@ public class TeacherController extends UserController {
 
     @GetMapping("/sessions/{id}")
     public String teacherSessionDetails(@PathVariable Long id, Model model, HttpSession httpSession) {
-        SessionDto sessionDto = teacherService.getSessionById(id);
+        CourseSessionDto courseSessionDto = teacherService.getSessionById(id);
         
         List<EnrollmentDto> enrollments = teacherService.getSessionEnrollments(id);
-        model.addAttribute("courseSession", sessionDto);
+        model.addAttribute("courseSession", courseSessionDto);
         model.addAttribute("enrollments", enrollments);
         
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
@@ -82,8 +82,8 @@ public class TeacherController extends UserController {
 
     @GetMapping("/sessions/{id}/edit")
     public String showEditSessionForm(@PathVariable Long id, Model model, HttpSession httpSession) {
-        SessionDto sessionDto = teacherService.getSessionById(id);
-        model.addAttribute("sessionDto", sessionDto);
+        CourseSessionDto courseSessionDto = teacherService.getSessionById(id);
+        model.addAttribute("courseSessionDto", courseSessionDto);
         
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
         if (userDto != null) {
@@ -94,15 +94,15 @@ public class TeacherController extends UserController {
     }
 
     @PostMapping("/sessions/{id}/edit")
-    public String updateSession(@ModelAttribute SessionDto sessionDto, HttpSession httpSession, Model model) {
+    public String updateSession(@ModelAttribute CourseSessionDto courseSessionDto, HttpSession httpSession, Model model) {
         Long teacherId = ((UserDto) httpSession.getAttribute("userDto")).getId();
         
         try {
-            teacherService.updateTeacherSession(sessionDto, teacherId);
-            return "redirect:/teacher/sessions/" + sessionDto.getId() + "?success=updated";
+            teacherService.updateTeacherSession(courseSessionDto, teacherId);
+            return "redirect:/teacher/sessions/" + courseSessionDto.getId() + "?success=updated";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("sessionDto", sessionDto);
+            model.addAttribute("courseSessionDto", courseSessionDto);
             return "teacher/edit_session";
         }
     }
