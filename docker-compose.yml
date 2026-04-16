@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: tsp_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/backend/teacher-session-service/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - teacher-session-service
+
   teacher-session-service:
     build:
       context: ./backend/teacher-session-service
