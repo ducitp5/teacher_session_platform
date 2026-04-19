@@ -20,7 +20,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_HOST=mysql-service
+      - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -42,7 +42,7 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - ./database/tsp_db_data/mysql_data:/var/lib/mysql
-    restart: "no"
+    restart: "always"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
