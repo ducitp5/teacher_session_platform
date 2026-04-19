@@ -207,3 +207,39 @@ public void processSearch(Map<String, Object> params) {
     // Resume processing...
 }
 ```
+
+---
+
+## 📦 5. Explicit Imports Over Fully Qualified Names
+
+Always use `import` statements at the top of your Java files rather than using fully qualified package class names directly inside your code logic or variables. This keeps the code clean and easier to read.
+
+### 🚫 Rule: Do NOT type out the full package path in the code body
+Never declare variables, method arguments, or perform `instanceof` checks using the entire package path.
+
+**Incorrect Example:**
+```java
+// Inside a class
+private java.util.List<com.teachersession.entities.Room> rooms;
+
+if (exception instanceof org.springframework.dao.DataAccessException) {
+    // ...
+}
+```
+
+### ✅ Rule: DO use import statements
+Use standard `import` statements at the top of the file and reference only the local class name within the code.
+
+**Correct Example:**
+```java
+import java.util.List;
+import com.teachersession.entities.Room;
+import org.springframework.dao.DataAccessException;
+
+// Inside a class
+private List<Room> rooms;
+
+if (exception instanceof DataAccessException) {
+    // ...
+}
+```
