@@ -1,6 +1,6 @@
 <form onsubmit="submitAjaxSearch(event)"
       id="filterForm"
-      class="bg-white dark:bg-slate-800 transition-colors duration-200/80 backdrop-blur-md rounded-2xl shadow-xl shadow-indigo-100/50 border border-white p-6 mb-10 flex flex-col md:flex-row gap-4 items-center justify-between">
+      class="bg-white dark:bg-slate-800 transition-colors duration-200/80 backdrop-blur-md rounded-2xl shadow-xl shadow-indigo-100/50 dark:shadow-none border border-white dark:border-slate-700 p-6 mb-10 flex flex-col md:flex-row gap-4 items-center justify-between">
     <div class="relative w-full md:w-96">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg class="h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
@@ -13,7 +13,7 @@
         <input type="text"
                name="search"
                th:value="${currentSearch}"
-               class="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 transition-colors duration-200 rounded-xl leading-5 bg-white dark:bg-slate-800 transition-colors duration-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-shadow"
+               class="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-shadow"
                placeholder="Search physical or online sessions...">
 
         <input type="hidden"
@@ -25,9 +25,9 @@
         <button type="button"
                 onclick="setAjaxTypeFilter('', this)"
                 th:classappend="${currentType == null or currentType == '' ?
-                    'bg-indigo-50 text-indigo-700 border-indigo-200'
+                    'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700/50'
                     :
-                    'text-slate-700 hover:bg-slate-100 bg-white dark:bg-slate-800 transition-colors duration-200 border-slate-200 dark:border-slate-700 transition-colors duration-200'}"
+                    'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}"
                 class="filter-type-btn whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium border transition-colors"
         >
             All Types
@@ -36,9 +36,9 @@
         <button type="button"
                 onclick="setAjaxTypeFilter('ONLINE', this)"
                 th:classappend="${currentType == 'ONLINE' ?
-                    'bg-indigo-50 text-indigo-700 border-indigo-200'
+                    'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700/50'
                     :
-                    'text-slate-700 hover:bg-slate-100 bg-white dark:bg-slate-800 transition-colors duration-200 border-slate-200 dark:border-slate-700 transition-colors duration-200'}"
+                    'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}"
                 class="filter-type-btn whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium border transition-colors"
         >
             Online
@@ -47,19 +47,19 @@
         <button type="button"
                 onclick="setAjaxTypeFilter('OFFLINE', this)"
                 th:classappend="${currentType == 'OFFLINE' ?
-                    'bg-indigo-50 text-indigo-700 border-indigo-200'
+                    'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700/50'
                     :
-                    'text-slate-700 hover:bg-slate-100 bg-white dark:bg-slate-800 transition-colors duration-200 border-slate-200 dark:border-slate-700 transition-colors duration-200'}"
+                    'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}"
                 class="filter-type-btn whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium border transition-colors"
         >
             In Person
         </button>
 
-        <div th:if="${userDto != null and (userDto.role.name() == 'STUDENT' or userDto.role.name() == 'TEACHER')}" class="border-l border-slate-200 dark:border-slate-700 transition-colors duration-200 mx-1 pl-3 hidden md:flex items-center">
+        <div th:if="${userDto != null and (userDto.role.name() == 'STUDENT' or userDto.role.name() == 'TEACHER')}" class="border-l border-slate-200 dark:border-slate-700 mx-1 pl-3 hidden md:flex items-center">
              <input type="hidden" name="enrolledOnly" id="enrolledOnlyFilter" th:value="${enrolledOnly != null ? enrolledOnly : 'false'}">
              <button type="button"
                     onclick="toggleEnrolledOnlyFilter(this)"
-                    th:classappend="${enrolledOnly != null and enrolledOnly ? 'bg-primary text-white border-primary' : 'text-slate-700 hover:bg-slate-100 bg-white dark:bg-slate-800 transition-colors duration-200 border-slate-200 dark:border-slate-700 transition-colors duration-200'}"
+                    th:classappend="${enrolledOnly != null and enrolledOnly ? 'bg-primary dark:bg-indigo-600 text-white border-primary dark:border-indigo-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}"
                     class="filter-enrolled-btn whitespace-nowrap rounded-lg px-4 py-2 text-sm font-bold border transition-colors flex items-center gap-1.5"
              >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
@@ -70,22 +70,28 @@
 </form>
 
 <script>
+    const typeActiveClasses = ['bg-indigo-50', 'dark:bg-indigo-900/50', 'text-indigo-700', 'dark:text-indigo-300', 'border-indigo-200', 'dark:border-indigo-700/50'];
+    const typeInactiveClasses = ['text-slate-700', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-700', 'bg-white', 'dark:bg-slate-800', 'border-slate-200', 'dark:border-slate-700'];
+
     function setAjaxTypeFilter(typeVal, btnElem) {
         document.getElementById('typeFilter').value = typeVal;
         
         // Reset old buttons
         const buttons = document.querySelectorAll('.filter-type-btn');
         buttons.forEach(btn => {
-            btn.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-200');
-            btn.classList.add('text-slate-700', 'hover:bg-slate-100', 'bg-white dark:bg-slate-800 transition-colors duration-200', 'border-slate-200 dark:border-slate-700 transition-colors duration-200');
+            btn.classList.remove(...typeActiveClasses);
+            btn.classList.add(...typeInactiveClasses);
         });
         
         // Activate new button
-        btnElem.classList.remove('text-slate-700', 'hover:bg-slate-100', 'bg-white dark:bg-slate-800 transition-colors duration-200', 'border-slate-200 dark:border-slate-700 transition-colors duration-200');
-        btnElem.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-200');
+        btnElem.classList.remove(...typeInactiveClasses);
+        btnElem.classList.add(...typeActiveClasses);
         
         submitAjaxSearch(null);
     }
+
+    const enrolledActiveClasses = ['bg-primary', 'dark:bg-indigo-600', 'text-white', 'border-primary', 'dark:border-indigo-600'];
+    const enrolledInactiveClasses = ['text-slate-700', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-700', 'bg-white', 'dark:bg-slate-800', 'border-slate-200', 'dark:border-slate-700'];
 
     function toggleEnrolledOnlyFilter(btnElem) {
         const input = document.getElementById('enrolledOnlyFilter');
@@ -93,11 +99,11 @@
         input.value = isEnrolledOnly ? 'false' : 'true';
         
         if (!isEnrolledOnly) {
-            btnElem.classList.remove('text-slate-700', 'hover:bg-slate-100', 'bg-white dark:bg-slate-800 transition-colors duration-200', 'border-slate-200 dark:border-slate-700 transition-colors duration-200');
-            btnElem.classList.add('bg-primary', 'text-white', 'border-primary');
+            btnElem.classList.remove(...enrolledInactiveClasses);
+            btnElem.classList.add(...enrolledActiveClasses);
         } else {
-            btnElem.classList.remove('bg-primary', 'text-white', 'border-primary');
-            btnElem.classList.add('text-slate-700', 'hover:bg-slate-100', 'bg-white dark:bg-slate-800 transition-colors duration-200', 'border-slate-200 dark:border-slate-700 transition-colors duration-200');
+            btnElem.classList.remove(...enrolledActiveClasses);
+            btnElem.classList.add(...enrolledInactiveClasses);
         }
         
         submitAjaxSearch(null);
