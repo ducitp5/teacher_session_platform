@@ -10,8 +10,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         <div class="mb-8">
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">My Learning</h1>
-            <p class="mt-1 text-sm text-slate-500">Manage your enrolled sessions.</p>
+            <h1 class="text-3xl font-black text-slate-900 dark:text-white transition-colors tracking-tight">My Learning</h1>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400 transition-colors">Manage your enrolled sessions.</p>
         </div>
 
         <div th:if="${param.success}" class="mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
@@ -21,15 +21,15 @@
             <p class="text-sm text-red-700" th:text="${param.error}"></p>
         </div>
 
-        <div class="bg-white shadow-sm border border-slate-100 rounded-3xl overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <h3 class="text-xl font-bold text-slate-900">Enrolled Sessions</h3>
+        <div class="bg-white dark:bg-slate-800 transition-colors duration-200 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors duration-200 rounded-3xl overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 transition-colors duration-200 bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white transition-colors">Enrolled Sessions</h3>
                 <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto" th:unless="${enrollments.empty}">
                     <div class="relative w-full sm:w-64">
-                        <input type="text" id="searchInput" placeholder="Search sessions..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        <input type="text" id="searchInput" placeholder="Search sessions..." class="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 transition-colors duration-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm">
                         <svg class="w-5 h-5 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
-                    <select id="statusFilter" class="w-full sm:w-auto px-4 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                    <select id="statusFilter" class="w-full sm:w-auto px-4 py-2 border border-slate-300 dark:border-slate-600 transition-colors duration-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm">
                         <option value="ALL">All Statuses</option>
                         <option value="ACTIVE">Active</option>
                         <option value="CANCELLED">Cancelled</option>
@@ -37,7 +37,7 @@
                 </div>
             </div>
 
-            <div th:if="${enrollments.empty}" class="p-12 text-center text-slate-500">
+            <div th:if="${enrollments.empty}" class="p-12 text-center text-slate-500 dark:text-slate-400 transition-colors">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
                     <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                          xmlns="http://www.w3.org/2000/svg">
@@ -46,26 +46,26 @@
                         </path>
                     </svg>
                 </div>
-                <p class="text-lg font-medium text-slate-900 mb-2">You are not enrolled in any sessions yet.</p>
+                <p class="text-lg font-medium text-slate-900 dark:text-white transition-colors mb-2">You are not enrolled in any sessions yet.</p>
                 <a href="/" class="text-primary hover:text-indigo-800 font-bold transition-colors">Browse classes to
                     get started -></a>
             </div>
 
             <ul role="list" class="divide-y divide-slate-100" th:unless="${enrollments.empty}" id="enrollmentList">
-                <li th:each="enrollment : ${enrollments}" class="hover:bg-slate-50 transition-colors enrollment-item" th:data-status="${enrollment.status.name()}">
+                <li th:each="enrollment : ${enrollments}" class="hover:bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200 transition-colors enrollment-item" th:data-status="${enrollment.status.name()}">
                     <div class="px-6 py-6 flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2 mb-1">
                                     <span th:if="${enrollment.status.name() == 'ACTIVE'}"
                                           class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-green-100 text-green-800 tracking-wider">Active</span>
                                 <span th:if="${enrollment.status.name() == 'CANCELLED'}"
-                                      class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-800 tracking-wider">Cancelled</span>
+                                      class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-800 dark:text-slate-300 transition-colors tracking-wider">Cancelled</span>
                             </div>
                             <a th:href="@{'/sessions/' + ${enrollment.sessionId}}" class="block">
-                                <p class="text-lg font-bold text-slate-900 truncate mb-1 session-title"
+                                <p class="text-lg font-bold text-slate-900 dark:text-white transition-colors truncate mb-1 session-title"
                                    th:text="${enrollment.sessionTitle}">Session Title</p>
                             </a>
-                            <p class="text-sm text-slate-500">
+                            <p class="text-sm text-slate-500 dark:text-slate-400 transition-colors">
                                 Enrolled on: <span
                                     th:text="${#temporals.format(enrollment.enrolledAt, 'MMM d, yyyy')}">Date</span>
                             </p>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(~{::title}, ~{::content})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin-layout :: html(~{::title}, ~{::content})}">
 <head>
     <title>LearnHub - Log Details</title>
 </head>
@@ -9,42 +9,42 @@
         <div class="mb-8 flex items-center justify-between">
             <div>
                 <div class="flex items-center gap-3">
-                    <h1 class="text-3xl font-black text-slate-900 tracking-tight" th:text="${'Log Detail #' + log.id}">Log Detail</h1>
-                    <span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-bold rounded-full">Error</span>
+                    <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight transition-colors" th:text="${'Log Detail #' + log.id}">Log Detail</h1>
+                    <span class="px-3 py-1 bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-400 text-xs font-bold rounded-full transition-colors">Error</span>
                 </div>
-                <p class="mt-1 text-sm text-slate-500" th:text="${'Recorded on ' + #temporals.format(log.createdAt, 'dd MMM yyyy HH:mm:ss')}">Recorded Date</p>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400 transition-colors" th:text="${'Recorded on ' + #temporals.format(log.createdAt, 'dd MMM yyyy HH:mm:ss')}">Recorded Date</p>
             </div>
-            <a href="/admin/logs" class="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors bg-white px-4 py-2 rounded-xl border border-slate-200">
+            <a href="/admin/logs" class="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition-colors dark:hover:text-white transition-colors bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
                 &larr; Back to Logs
             </a>
         </div>
 
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden mb-6">
-            <div class="px-6 py-5 border-b border-slate-100 bg-slate-50">
-                <h3 class="text-lg font-bold text-slate-900">Request Context</h3>
+        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden mb-6 transition-colors duration-200">
+            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white transition-colors">Request Context</h3>
             </div>
             <div class="p-6">
                 <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
                     <div>
-                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">User</dt>
-                        <dd class="text-sm font-medium text-slate-900">
+                        <dt class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 transition-colors">User</dt>
+                        <dd class="text-sm font-medium text-slate-900 dark:text-slate-300 transition-colors">
                             <span th:if="${log.user != null}">
-                                <a th:href="@{/admin/users}" class="text-primary hover:underline" th:text="${log.user.id + ' - ' + log.user.email}">User Link</a>
+                                <a th:href="@{/admin/users}" class="text-primary dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:underline transition-colors" th:text="${log.user.id + ' - ' + log.user.email}">User Link</a>
                             </span>
-                            <span th:if="${log.user == null}" class="italic text-slate-500">Unauthenticated / Anonymous</span>
+                            <span th:if="${log.user == null}" class="italic text-slate-500 dark:text-slate-400">Unauthenticated / Anonymous</span>
                         </dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">HTTP Method</dt>
-                        <dd class="text-sm font-mono font-bold bg-slate-100 inline-block px-2 py-1 rounded" th:text="${log.requestMethod ?: 'N/A'}">GET</dd>
+                        <dt class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 transition-colors">HTTP Method</dt>
+                        <dd class="text-sm font-mono font-bold bg-slate-100 dark:bg-slate-700 dark:text-white inline-block px-2 py-1 rounded transition-colors" th:text="${log.requestMethod ?: 'N/A'}">GET</dd>
                     </div>
                     <div class="md:col-span-2">
-                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Request URL</dt>
-                        <dd class="text-sm font-mono text-slate-900 break-all bg-slate-50 p-2 rounded border border-slate-200" th:text="${log.requestUrl ?: 'N/A'}">/url</dd>
+                        <dt class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 transition-colors">Request URL</dt>
+                        <dd class="text-sm font-mono text-slate-900 dark:text-slate-300 break-all bg-slate-50 dark:bg-slate-700/50 p-2 rounded border border-slate-200 dark:border-slate-600 transition-colors" th:text="${log.requestUrl ?: 'N/A'}">/url</dd>
                     </div>
                     <div class="md:col-span-2">
-                        <dt class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Error Message</dt>
-                        <dd class="text-sm font-bold text-red-600 break-words" th:text="${log.message}">Error Message</dd>
+                        <dt class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 transition-colors">Error Message</dt>
+                        <dd class="text-sm font-bold text-red-600 dark:text-red-400 break-words transition-colors" th:text="${log.message}">Error Message</dd>
                     </div>
                 </dl>
             </div>

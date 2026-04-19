@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -17,11 +18,19 @@
                     }
                 }
             }
+        };
+    </script>
+    <script>
+        // Check local storage for theme
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
     </script>
 </head>
 
-<body class="bg-slate-50 min-h-screen font-sans antialiased text-slate-800 flex flex-col">
+<body class="bg-slate-50 dark:bg-slate-900 min-h-screen font-sans antialiased text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-200">
 
 <!-- Navigation -->
 <div th:replace="include/navigation">&copy; 2016 The Static Templates</div>

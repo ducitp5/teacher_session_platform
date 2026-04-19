@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(~{::title}, ~{::content})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin-layout :: html(~{::title}, ~{::content})}">
 <head>
     <title>LearnHub - Admin Dashboard</title>
 </head>
@@ -7,59 +7,59 @@
 <th:block th:fragment="content">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="mb-8">
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">Admin Dashboard</h1>
-            <p class="mt-1 text-sm text-slate-500">Platform overview and management.</p>
+            <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight transition-colors">Admin Dashboard</h1>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400 transition-colors">Platform overview and management.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm transition-colors duration-200">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900">Total Users</h3>
-                    <span class="bg-indigo-100 text-indigo-700 p-2 rounded-xl">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 transition-colors">Total Users</h3>
+                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400 p-2 rounded-xl transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     </span>
                 </div>
-                <p class="text-4xl font-black text-slate-900" th:text="${totalUsers}">0</p>
-                <a href="/admin/users" class="mt-4 inline-block text-sm font-bold text-primary hover:underline">Manage Users →</a>
+                <p class="text-4xl font-black text-slate-900 dark:text-white transition-colors" th:text="${totalUsers}">0</p>
+                <a href="/admin/users" class="mt-4 inline-block text-sm font-bold text-primary dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:underline transition-colors">Manage Users →</a>
             </div>
 
-            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm transition-colors duration-200">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900">Total Sessions</h3>
-                    <span class="bg-pink-100 text-pink-700 p-2 rounded-xl">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 transition-colors">Total Sessions</h3>
+                    <span class="bg-pink-100 dark:bg-pink-900/50 text-pink-700 dark:text-pink-400 p-2 rounded-xl transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
                     </span>
                 </div>
-                <p class="text-4xl font-black text-slate-900" th:text="${totalSessions}">0</p>
-                <a href="/admin/sessions" class="mt-4 inline-block text-sm font-bold text-secondary hover:underline">Moderate Sessions →</a>
+                <p class="text-4xl font-black text-slate-900 dark:text-white transition-colors" th:text="${totalSessions}">0</p>
+                <a href="/admin/sessions" class="mt-4 inline-block text-sm font-bold text-secondary dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 hover:underline transition-colors">Moderate Sessions →</a>
             </div>
 
-            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm transition-colors duration-200">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900">System Bugs</h3>
-                    <span class="bg-red-100 text-red-700 p-2 rounded-xl">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 transition-colors">System Bugs</h3>
+                    <span class="bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 p-2 rounded-xl transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     </span>
                 </div>
-                <p class="text-4xl font-black text-slate-900" th:text="${totalBugLogs}">0</p>
-                <a href="/admin/logs" class="mt-4 inline-block text-sm font-bold text-red-600 hover:underline">View Bug Logs →</a>
+                <p class="text-4xl font-black text-slate-900 dark:text-white transition-colors" th:text="${totalBugLogs}">0</p>
+                <a href="/admin/logs" class="mt-4 inline-block text-sm font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:underline transition-colors">View Bug Logs →</a>
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-100 bg-slate-50">
-                <h3 class="text-xl font-bold text-slate-900 text-center">Quick Actions</h3>
+        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-colors duration-200">
+            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white text-center transition-colors">Quick Actions</h3>
             </div>
             <div class="p-8 flex flex-wrap justify-center gap-4">
-                <a href="/admin/users" class="px-6 py-3 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all flex items-center gap-2">
+                <a href="/admin/users" class="px-6 py-3 bg-slate-900 dark:bg-indigo-600 text-white font-bold rounded-2xl hover:bg-slate-800 dark:hover:bg-indigo-500 transition-all flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                     Review User Access
                 </a>
-                <a href="/admin/sessions" class="px-6 py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-2xl hover:bg-slate-50 transition-all flex items-center gap-2">
+                <a href="/admin/sessions" class="px-6 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white font-bold rounded-2xl hover:bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200 dark:hover:bg-slate-600 transition-all flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Check New Sessions
                 </a>
-                <a href="/admin/logs" class="px-6 py-3 bg-white border border-slate-200 text-red-600 font-bold rounded-2xl hover:bg-red-50 hover:border-red-200 transition-all flex items-center gap-2">
+                <a href="/admin/logs" class="px-6 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-red-600 dark:text-red-400 font-bold rounded-2xl hover:bg-red-50 dark:hover:bg-slate-600 hover:border-red-200 dark:hover:border-slate-500 transition-all flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     View System Logs
                 </a>

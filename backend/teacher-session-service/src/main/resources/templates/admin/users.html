@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(~{::title}, ~{::content})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin-layout :: html(~{::title}, ~{::content})}">
 <head>
     <title>LearnHub - User Management</title>
 </head>
@@ -8,36 +8,36 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="flex items-center justify-between mb-8">
             <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">User Management</h1>
-                <p class="mt-1 text-sm text-slate-500">List and manage platform users.</p>
+                <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight transition-colors">User Management</h1>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400 transition-colors">List and manage platform users.</p>
             </div>
-            <a href="/admin/dashboard" class="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">← Back to Dashboard</a>
+            <a href="/admin/dashboard" class="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition-colors dark:hover:text-white transition-colors">← Back to Dashboard</a>
         </div>
 
         <div th:if="${param.success}" class="mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
             <p class="text-sm text-green-700">Action completed successfully.</p>
         </div>
 
-        <div class="bg-white shadow-sm border border-slate-100 rounded-3xl overflow-hidden">
-            <table class="min-w-full divide-y divide-slate-100">
-                <thead class="bg-slate-50">
+        <div class="bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 rounded-3xl overflow-hidden transition-colors duration-200">
+            <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
+                <thead class="bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200">
                     <tr>
-                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">User</th>
-                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 transition-colors uppercase tracking-wider">User</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 transition-colors uppercase tracking-wider">Role</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 transition-colors uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 transition-colors uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-slate-100">
-                    <tr th:each="user : ${users}" class="hover:bg-slate-50 transition-colors">
+                <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-100 dark:divide-slate-700 transition-colors duration-200">
+                    <tr th:each="user : ${users}" class="hover:bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200 dark:hover:bg-slate-700/50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center">
-                                    <span class="text-slate-500 font-bold" th:text="${#strings.substring(user.firstName, 0, 1)}">U</span>
+                                <div class="flex-shrink-0 h-10 w-10 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center transition-colors">
+                                    <span class="text-slate-500 dark:text-slate-300 font-bold" th:text="${#strings.substring(user.firstName, 0, 1)}">U</span>
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-bold text-slate-900" th:text="${user.firstName + ' ' + user.lastName}">User Name</div>
-                                    <div class="text-xs text-slate-500" th:text="${user.email}">user@example.com</div>
+                                    <div class="text-sm font-bold text-slate-900 dark:text-slate-100 transition-colors" th:text="${user.firstName + ' ' + user.lastName}">User Name</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400 transition-colors" th:text="${user.email}">user@example.com</div>
                                 </div>
                             </div>
                         </td>

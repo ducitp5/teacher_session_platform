@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
+
 import org.springframework.dao.DataAccessException;
 
 @Slf4j
@@ -34,20 +35,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleException(Exception ex, HttpServletRequest request, HttpSession session, Model model) {
+    public String handleException(Exception exception, HttpServletRequest request, HttpSession session, Model model) {
 
-        log.error("Unhandled Exception caught: ", ex);
+        log.error("Unhandled Exception caught: ", exception);
 
         UserDto userDto = (UserDto) session.getAttribute("userDto");
         User user = null;
 
-        boolean dbError = isDatabaseError(ex);
+        boolean dbError = isDatabaseError(exception);
         String bugRefId = "N/A";
         String loggingErrorMessage = null;
-        
+
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        ex.printStackTrace(pw);
+        exception.printStackTrace(pw);
         String stackTrace = sw.toString();
 
         if (!dbError) {
@@ -58,7 +59,7 @@ public class GlobalExceptionHandler {
 
                 BugLog bugLog = BugLog.builder()
                         .user(user)
-                        .message(ex.getMessage() != null ? ex.getMessage() : ex.getClass().getName())
+                        .message(exception.getMessage() != null ? exception.getMessage() : exception.getClass().getName())
                         .stackTrace(stackTrace)
                         .requestUrl(request.getRequestURL() != null ? request.getRequestURL().toString() : null)
                         .requestMethod(request.getMethod())
@@ -76,15 +77,16 @@ public class GlobalExceptionHandler {
         model.addAttribute("bugRefId", bugRefId);
         model.addAttribute("dbError", dbError);
         model.addAttribute("userDto", userDto);
-        model.addAttribute("exceptionMessage", ex.getMessage() != null ? ex.getMessage() : ex.getClass().getName());
+        model.addAttribute("exceptionMessage", exception.getMessage() != null ? exception.getMessage() : exception.getClass().getName());
         model.addAttribute("exceptionTrace", stackTrace);
         model.addAttribute("loggingErrorMessage", loggingErrorMessage);
+        model.addAttribute("exception", exception);
 
         return "error/500";
     }
 
-    private boolean isDatabaseError(Exception ex) {
-        Throwable cause = ex;
+    private boolean isDatabaseError(Exception exception) {
+        Throwable cause = exception;
         while (cause != null) {
             if (cause instanceof SQLException || cause instanceof DataAccessException) {
                 return true;
