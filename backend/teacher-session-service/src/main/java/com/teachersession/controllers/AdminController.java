@@ -26,6 +26,7 @@ public class AdminController extends UserController {
 
         model.addAttribute("totalUsers", adminService.getTotalUsers());
         model.addAttribute("totalSessions", adminService.getTotalSessions());
+        model.addAttribute("totalBugLogs", adminService.getTotalBugLogs());
         
         UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
         model.addAttribute("userDto", userDto);
@@ -73,6 +74,30 @@ public class AdminController extends UserController {
 
         adminService.cancelSession(id);
         return "redirect:/admin/sessions?success=session_cancelled";
+    }
+
+    @GetMapping("/logs")
+    public String listLogs(Model model, HttpSession httpSession) {
+        if (!isAdmin(httpSession)) return "redirect:/login";
+
+        model.addAttribute("logs", adminService.getAllBugLogs());
+        
+        UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
+        model.addAttribute("userDto", userDto);
+
+        return "admin/logs";
+    }
+
+    @GetMapping("/logs/{id}")
+    public String viewLog(@PathVariable Long id, Model model, HttpSession httpSession) {
+        if (!isAdmin(httpSession)) return "redirect:/login";
+
+        model.addAttribute("log", adminService.getBugLogById(id));
+        
+        UserDto userDto = (UserDto) httpSession.getAttribute("userDto");
+        model.addAttribute("userDto", userDto);
+
+        return "admin/log-detail";
     }
 
     private boolean isAdmin(HttpSession session) {

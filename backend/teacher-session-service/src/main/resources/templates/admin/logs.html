@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(~{::title}, ~{::content})}">
+<head>
+    <title>LearnHub - System Logs</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight">System Logs</h1>
+                <p class="mt-1 text-sm text-slate-500">Monitor unexpected server errors and exceptions.</p>
+            </div>
+            <a href="/admin/dashboard" class="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
+                &larr; Back to Dashboard
+            </a>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-slate-50 border-b border-slate-100">
+                        <th class="py-4 px-6 text-xs font-black text-slate-500 uppercase tracking-widest">ID</th>
+                        <th class="py-4 px-6 text-xs font-black text-slate-500 uppercase tracking-widest">Date/Time</th>
+                        <th class="py-4 px-6 text-xs font-black text-slate-500 uppercase tracking-widest">User ID</th>
+                        <th class="py-4 px-6 text-xs font-black text-slate-500 uppercase tracking-widest">Method & URL</th>
+                        <th class="py-4 px-6 text-xs font-black text-slate-500 uppercase tracking-widest">Error Message</th>
+                        <th class="py-4 px-6 text-xs font-black text-slate-500 uppercase tracking-widest">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                    <tr th:each="log : ${logs}" class="hover:bg-slate-50 transition-colors">
+                        <td class="py-4 px-6 text-sm font-bold text-slate-900" th:text="${'#' + log.id}">#1</td>
+                        <td class="py-4 px-6 text-sm text-slate-600" th:text="${#temporals.format(log.createdAt, 'dd MMM yyyy HH:mm')}">Date</td>
+                        <td class="py-4 px-6 text-sm text-slate-600">
+                            <span th:if="${log.user != null}" th:text="${log.user.id + ' - ' + log.user.email}">User</span>
+                            <span th:if="${log.user == null}" class="text-slate-400 italic">Anonymous</span>
+                        </td>
+                        <td class="py-4 px-6 text-sm text-slate-600">
+                            <span class="px-2 py-1 bg-slate-100 rounded text-xs font-mono font-bold mr-2" th:text="${log.requestMethod}">GET</span>
+                            <span class="truncate max-w-[200px] inline-block align-bottom" th:text="${log.requestUrl != null ? log.requestUrl : 'N/A'}" th:title="${log.requestUrl}">/url</span>
+                        </td>
+                        <td class="py-4 px-6 text-sm">
+                            <p class="truncate max-w-xs font-mono text-red-600 text-xs" th:text="${log.message}" th:title="${log.message}">Error message</p>
+                        </td>
+                        <td class="py-4 px-6 text-sm">
+                            <a th:href="@{/admin/logs/{id}(id=${log.id})}" class="text-indigo-600 hover:text-indigo-900 font-bold hover:underline">View Trace</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${logs.empty}">
+                        <td colspan="6" class="py-12 text-center">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-50 mb-4">
+                                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900">All Clear!</h3>
+                            <p class="text-slate-500 mt-1">No system bugs have been recorded.</p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
